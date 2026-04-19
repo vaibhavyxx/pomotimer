@@ -54,11 +54,25 @@ const TodoList = (props) => {
         );
     }
 
+    const TodoItem = ({todo}) => {
+        const [completed, setCompleted] = useState(false);
+
+        return (
+            <div className='todo'>
+                <h3 style={{
+                    textDecoration: completed? 'line-through': 'none',
+                    transition: 'all 0.5s ease',
+                    alignSelf:completed? 'flex-end' : 'flex-start',
+                }}>{todo.task}</h3>
+                <button onClick={()=>setCompleted(!completed)}>{completed? 'Undo': 'Done'}</button>
+                <button>Remove</button>
+            </div>
+        );
+    }
+
     const todo = todos.map(todo => {
         return (
-            <div key={todo.id} className='todo'>
-                <h3 className='task'>{todo.task}</h3>
-            </div>
+            <TodoItem key={todo.id} todo={todo}/>
         );
     });
 

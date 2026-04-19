@@ -249,19 +249,14 @@ h3.domoName {
     font-size: 1.5em;
 }
 
-h3.domoAge {
-    float:right;
-    text-align: left;
-    width: 100px;
-    font-weight: bold;
-    padding-right: 40px;
-    font-size: 1.5em;
+.todoList {
+    display: flex;
+    flex-direction: column;
 }
 
-.domo:first-child {
-    margin-top: 10px;
-}
-
-.domo:last-child {
-    margin-bottom:10px;
+.todo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
 }
