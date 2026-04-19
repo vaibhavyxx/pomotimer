@@ -6,7 +6,11 @@ const TaskScheme = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        set: setName,
+    },
+    owner:{
+            type: mongoose.Schema.ObjectId,
+            required: true,
+            ref: 'Account',
     },
     createdDate: {
         type: Date,

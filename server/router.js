@@ -3,7 +3,10 @@ const { renderWelcome } = require('./controllers/Account');
 const mid = require('./middleware');
 
 const router = (app) => {
-    app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
+     app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
+    app.get('/getTask', controllers.Task.getTask); 
+    app.get('/todo', controllers.Task.addTask);
+    app.get('/todo', controllers.Task.makerPage);
     
     app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
     app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
