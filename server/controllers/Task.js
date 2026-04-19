@@ -8,7 +8,7 @@ const getTask = async (req, res) => {
     try{
         const query = {owner: req.session.account._id};
         const docs = await Task.find(query).select('task').lean().exec();
-        return res.json({task: docs});
+        return res.json({tasks: docs});
     }catch(err){
         console.log(err);
         return res.status(500).json({error: 'Error retrieving tasks'});
