@@ -17,8 +17,9 @@ const handleTodo = (e, onDomoAdded) => {
     helper.sendPost(e.target.action, {task}, onDomoAdded);
     return false;
 };
+
 //functional component
-const todoForm = (props) => {
+const TodoForm = (props) => {
     return (
         <form id='todoForm'
             onSubmit={(e) => handleTodo(e, props.triggerReload)}
@@ -33,7 +34,7 @@ const todoForm = (props) => {
     );
 };
 
-const todoList = (props) => {
+const TodoList = (props) => {
     const [todos, setTodo] = useState(props.todo);  //todos is an array
 
     useEffect(() => {
@@ -45,10 +46,10 @@ const todoList = (props) => {
         loadTasksFromServer();
     }, [props.reloadTasks]);    //reload domos? 
 
-    if(todos.length === 0){
+    if(todos.length === 0 || !todos){
         return (
             <div className='todoList'>
-                <h3 className='noTodo'>You're all caught up!</h3>
+                <h3 className='empty'>You're all caught up!</h3>
             </div>
         );
     }
@@ -69,19 +70,24 @@ const todoList = (props) => {
     );
 };
 
+const Greet = () =>{
+    return <form id='todoForm'
+            name='todoForm'
+            action='/todo'
+            method='POST'
+            className='todoForm'>
+                <label htmlFor='task'>Task: </label>
+                <input id='task' type='text' name='task' placeholder='Task'/>
+                <input className='submitTodo' type='submit' value='Submit' />
+            </form>;
+}
+
 //keeping track of the submit button and every time the user triggers, it reloads the doms
 const App = () => {
-    const [reloadDomos, setReloadDomos] = useState(false);
+    //const [reloadDomos, setReloadDomos] = useState(false);
 
     return (
-        <div>
-            <div id='addTask'>
-                <todoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
-            </div>
-            <div id='domos'>
-                <todoList todo={[]} reloadTasks={reloadDomos} />
-            </div>
-        </div>
+        <Greet />
     );
 };
 

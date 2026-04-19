@@ -23,13 +23,13 @@ const login = (req, res) => {
         }
         req.session.account = Account.toAPI(account);
         req.session.save(() => {
-            return res.json({redirect: '/maker'});
+            return res.json({redirect: '/todo'});
         });
     });
 };
 
 const renderWelcome = (req, res) => {
-    return res.render('maker', {
+    return res.render('/', {    //testing
         username: req.session.account.username,
     });
 };
@@ -54,7 +54,7 @@ const signup = async (req, res) => {
         req.session.account = Account.toAPI(newAccount);
         
         req.session.save(() => {
-            return res.json({redirect: '/maker'});
+            return res.json({redirect: '/todo'});
         });
     }catch(err){
         console.log(err);
