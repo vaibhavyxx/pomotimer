@@ -249,12 +249,12 @@ h3.domoName {
     font-size: 1.5em;
 }
 
-.todoList {
+.todo {
     display: flex;
     flex-direction: column;
 }
 
-.todo {
+.allItems {
     display: flex;
     align-items: center;
     gap: 10px;

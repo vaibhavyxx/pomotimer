@@ -5,6 +5,8 @@ const mid = require('./middleware');
 const router = (app) => {
     app.get('/getTask', mid.requiresLogin, controllers.Task.getTask);  
     app.post('/todo', mid.requiresLogin, controllers.Task.addTask);
+
+    app.delete('/todo/:id', mid.requiresLogin, controllers.Task.deleteTask);
     app.get('/todo', mid.requiresLogin, controllers.Task.makerPage);   
 
     app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

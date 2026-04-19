@@ -4,7 +4,7 @@ const React = require('react');
 const {useState, useEffect} = React;
 const {createRoot} = require('react-dom/client');
 
-const handleTodo = (e, onDomoAdded) => {
+const handleTodo = (e, onTaskAdded) => {
     e.preventDefault();
     helper.hideError();
 
@@ -14,7 +14,8 @@ const handleTodo = (e, onDomoAdded) => {
         helper.handleError('All fields are required');
         return false;
     }
-    helper.sendPost(e.target.action, {task}, onDomoAdded);
+    helper.sendPost(e.target.action, {task}, onTaskAdded);
+     e.target.querySelector('#task').value = '';
     return false;
 };
 
@@ -44,7 +45,7 @@ const TodoList = (props) => {
             setTodo(data.tasks);    //new thing
         };
         loadTasksFromServer();
-    }, [props.reloadTasks]);    //reload domos? 
+    }, [props.reloadTasks]);    
 
     if(!todos || todos.length === 0){
         return (
@@ -54,25 +55,31 @@ const TodoList = (props) => {
         );
     }
 
-    const TodoItem = ({todo}) => {
+    const TodoItem = ({todo, triggerReload}) => {
         const [completed, setCompleted] = useState(false);
 
+        const handleDelete = async () => {
+            const response = await fetch(`/todo/${todo._id}`, {
+                method: 'DELETE',
+            });
+            if(response.status === 204)
+                triggerReload();
+        };
+        //broken transistion
         return (
             <div className='todo'>
                 <h3 style={{
                     textDecoration: completed? 'line-through': 'none',
-                    transition: 'all 0.5s ease',
-                    alignSelf:completed? 'flex-end' : 'flex-start',
                 }}>{todo.task}</h3>
                 <button onClick={()=>setCompleted(!completed)}>{completed? 'Undo': 'Done'}</button>
-                <button>Remove</button>
+                <button onClick={handleDelete}>Remove</button>
             </div>
         );
     }
 
     const todo = todos.map(todo => {
         return (
-            <TodoItem key={todo.id} todo={todo}/>
+            <TodoItem key={todo.id} todo={todo} triggerReload={props.triggerReload}/>
         );
     });
 
@@ -84,18 +91,6 @@ const TodoList = (props) => {
     );
 };
 
-const Greet = () =>{
-    return <form id='todoForm'
-            name='todoForm'
-            action='/todo'
-            method='POST'
-            className='todoForm'>
-                <label htmlFor='task'>Task: </label>
-                <input id='task' type='text' name='task' placeholder='Task'/>
-                <input className='submitTodo' type='submit' value='Submit' />
-            </form>;
-}
-
 //keeping track of the submit button and every time the user triggers, it reloads the doms
 const App = () => {
     //const [reloadDomos, setReloadDomos] = useState(false);
@@ -106,7 +101,7 @@ const App = () => {
                 <TodoForm triggerReload={() => setReloadTasks(!reloadTasks)}/>
             </div>
             <div id='todo'>
-                <TodoList todo={[]} reloadTasks={reloadTasks}/>
+                <TodoList todo={[]} reloadTasks={reloadTasks} triggerReload={() => setReloadTasks(!reloadTasks)} />
             </div>
         </>
     );

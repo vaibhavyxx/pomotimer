@@ -32,11 +32,25 @@ const addTask = async (req, res) => {
 
     }catch(err){
         console.log(err);
-        /*if(err.code === 11000){
-            return res.status(400).json({error: 'Domo already exists!'});
-        }*/
         return res.status(500).json({error: 'An error occured making demo!'});
     }
 }
 
-module.exports = {makerPage, getTask, addTask,};
+const deleteTask = async (req, res) => {
+    try {
+        const task = await Task.findOneAndDelete({
+            _id: req.params.id,
+            owner: req.session.account._id,
+        });
+
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+
+        return res.status(204).json({ status: 'success' });
+    } catch(err) {
+        return res.status(500).json({ error: 'Something went wrong' });
+    }
+};
+
+module.exports = {makerPage, getTask, addTask, deleteTask};
