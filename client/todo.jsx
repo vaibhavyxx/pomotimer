@@ -46,7 +46,7 @@ const TodoList = (props) => {
         loadTasksFromServer();
     }, [props.reloadTasks]);    //reload domos? 
 
-    if(todos.length === 0 || !todos){
+    if(!todos || todos.length === 0){
         return (
             <div className='todoList'>
                 <h3 className='empty'>You're all caught up!</h3>
@@ -85,9 +85,16 @@ const Greet = () =>{
 //keeping track of the submit button and every time the user triggers, it reloads the doms
 const App = () => {
     //const [reloadDomos, setReloadDomos] = useState(false);
-
+    const [reloadTasks, setReloadTasks] = useState(false);
     return (
-        <Greet />
+        <>
+            <div id='addTodo'>
+                <TodoForm triggerReload={() => setReloadTasks(!reloadTasks)}/>
+            </div>
+            <div id='todo'>
+                <TodoList todo={[]} reloadTasks={reloadTasks}/>
+            </div>
+        </>
     );
 };
 
