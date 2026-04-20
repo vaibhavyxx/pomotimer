@@ -11,7 +11,7 @@ const getTask = async (req, res) => {
         return res.json({tasks: docs});
     }catch(err){
         console.log(err);
-        return res.status(500).json({error: 'Error retrieving tasks'});
+        return res.status(500).json({error: err});
     }
 };
 
@@ -49,7 +49,7 @@ const deleteTask = async (req, res) => {
 
         return res.status(204).json({ status: 'success' });
     } catch(err) {
-        return res.status(500).json({ error: 'Something went wrong' });
+        return res.status(500).json({ error: err });
     }
 };
 

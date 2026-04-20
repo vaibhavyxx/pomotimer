@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const _ = require('underscore');
 
 const TaskScheme = new mongoose.Schema({
     task: {
