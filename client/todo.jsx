@@ -3,7 +3,10 @@ const helper = require('./helper.js');
 const React = require('react');
 const {useState, useEffect} = React;
 const {createRoot} = require('react-dom/client');
+import {Clock} from './timer.jsx';
 
+
+//Sample code from repository
 const handleTodo = (e, onTaskAdded) => {
     e.preventDefault();
     helper.hideError();
@@ -97,6 +100,7 @@ const App = () => {
     const [reloadTasks, setReloadTasks] = useState(false);
     return (
         <>
+            <Clock />
             <div id='addTodo'>
                 <TodoForm triggerReload={() => setReloadTasks(!reloadTasks)}/>
             </div>
@@ -106,6 +110,8 @@ const App = () => {
         </>
     );
 };
+
+
 
 const init = () => {
     const root = createRoot(document.getElementById('app'));
