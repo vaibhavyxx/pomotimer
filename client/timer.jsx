@@ -10,7 +10,7 @@ function MyTimer({ expiryTimestamp }) {
     pause,
     resume,
     restart,
-  } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called'), interval: 20 });
+  } = useTimer({ expiryTimestamp, autoStart:false, onExpire: () => console.warn('onExpire called'), interval: 1000 });
 
 
   return (
@@ -30,13 +30,30 @@ function MyTimer({ expiryTimestamp }) {
         time.setSeconds(time.getSeconds() + 300);
         restart(time)
       }}>Restart</button>
+
+      <ClockSetting />
     </div>
   );
 }
 
+const ClockSetting = (props) => {
+    return (
+        <form id='clockForm'
+            onSubmit={(e) => handleTodo(e, props.triggerReload)}
+            name='clockForm'
+            action='/clockSetting'
+            method='POST'
+            className='clockForm'>
+                <label htmlFor='duration'>Duration: </label>
+                <input id='duration' type='input' min={1} name='duration' placeholder='Duration'/>
+                <input className='submitClock' type='submit' value='Submit' />
+            </form>
+    );
+};
+
 export function Clock() {
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 600); // 10 minutes timer
+  time.setSeconds(time.getSeconds() + 600); // this is what's tailored --TODO
   return (
     <div>
       <MyTimer expiryTimestamp={time} />
