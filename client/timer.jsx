@@ -10,13 +10,17 @@ function MyTimer({ expiryTimestamp }) {
     pause,
     resume,
     restart,
-  } = useTimer({ expiryTimestamp, autoStart:false, onExpire: () => console.warn('onExpire called'), interval: 1000 });
+  } = useTimer({ expiryTimestamp, autoStart:false, onExpire: () => console.warn('onExpire called') });
 
+   const handleDurationChange = (newDuration) => {
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + newDuration); 
+        restart(time, false); 
+    };
 
   return (
     <div style={{textAlign: 'center'}}>
-      <h1>react-timer-hook </h1>
-      <p>Timer Demo</p>
+      <h1>Work</h1>
       <div style={{fontSize: '100px'}}>
         <span>{minutes}</span>:<span>{seconds}</span>
       </div>
@@ -25,18 +29,25 @@ function MyTimer({ expiryTimestamp }) {
       <button onClick={pause}>Pause</button>
       <button onClick={resume}>Resume</button>
       <button onClick={() => {
-        // Restarts to 5 minutes timer
         const time = new Date();
         time.setSeconds(time.getSeconds() + 300);
         restart(time)
       }}>Restart</button>
 
-      <ClockSetting />
+      <ClockSetting onDurationChange={handleDurationChange}/>
     </div>
   );
 }
 
-const ClockSetting = (props) => {
+const ClockSetting = ({onDurationChange}) => {
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const dur = e.target.querySelector('#duration').value;
+    if(!dur) return;
+    onDurationChange(Number(dur)* 60);  //converts to seconds
+
+  };
     return (
         <form id='clockForm'
             onSubmit={(e) => handleTodo(e, props.triggerReload)}
@@ -53,7 +64,7 @@ const ClockSetting = (props) => {
 
 export function Clock() {
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 600); // this is what's tailored --TODO
+  time.setSeconds(time.getSeconds() + 600); 
   return (
     <div>
       <MyTimer expiryTimestamp={time} />
