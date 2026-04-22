@@ -38,6 +38,21 @@ const TodoForm = (props) => {
     );
 };
 
+const EditTodoForm = (props) => {
+    return (
+        <form id='editForm'
+            onSubmit={(e) => handleTodo(e, props.triggerReload)}
+            name='editForm'
+            action='/editTodo'
+            method='PATCH'
+            className='todoForm'>
+                <label htmlFor='task'>Task: </label>
+                <input id='task' type='text' name='task' placeholder='Task'/>
+                <input className='submitTodo' type='submit' value='Submit' />
+            </form>
+    );
+};
+
 const TodoList = (props) => {
     const [todos, setTodo] = useState(props.todo);  //todos is an array
 
@@ -60,6 +75,7 @@ const TodoList = (props) => {
 
     const TodoItem = ({todo, triggerReload}) => {
         const [completed, setCompleted] = useState(false);
+        const [edited, setEdit] = useState(false);
 
         const handleDelete = async () => {
             const response = await fetch(`/todo/${todo._id}`, {
@@ -68,6 +84,17 @@ const TodoList = (props) => {
             if(response.status === 204)
                 triggerReload();
         };
+
+        const updateTodo = async () => {
+            console.log(`/editTodo/${todo._id}`);
+            const response = await fetch(`/editTodo/${todo._id}`, {
+                method: 'PATCH',
+            });
+            if(response.status === 204){
+                triggerReload();
+            }
+        }
+       
         //broken transistion
         return (
             <div className='todo'>
@@ -76,6 +103,9 @@ const TodoList = (props) => {
                 }}>{todo.task}</h3>
                 <button onClick={()=>setCompleted(!completed)}>{completed? 'Undo': 'Done'}</button>
                 <button onClick={handleDelete}>Remove</button>
+                <button onClick={() => setEdit(!edited)}>Edit</button>
+
+                {edited && (<EditTodoForm/>)}
             </div>
         );
     }
@@ -95,8 +125,8 @@ const TodoList = (props) => {
 };
 
 //keeping track of the submit button and every time the user triggers, it reloads the doms
+//this should go in a separate class
 const App = () => {
-    //const [reloadDomos, setReloadDomos] = useState(false);
     const [reloadTasks, setReloadTasks] = useState(false);
     return (
         <>

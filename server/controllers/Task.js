@@ -15,6 +15,21 @@ const getTask = async (req, res) => {
     }
 };
 
+const updateTask = async (req, res) =>{
+    try{
+        const task = await Task.findOneAndUpdate({
+            _id: req.params.id,
+            owner: req.session.account._id,
+        });
+         if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+        return res.status(204).json({ status: 'success' });
+    } catch(err) {
+        return res.status(500).json({ error: err });
+    }
+}
+
 const addTask = async (req, res) => {
     if(!req.body.task){
         return res.status(400).json({error: 'Missing paramters'});
@@ -53,4 +68,4 @@ const deleteTask = async (req, res) => {
     }
 };
 
-module.exports = {makerPage, getTask, addTask, deleteTask};
+module.exports = {makerPage, getTask, addTask, deleteTask, updateTask};
