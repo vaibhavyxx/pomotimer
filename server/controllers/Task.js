@@ -17,7 +17,7 @@ const getTask = async (req, res) => {
 
 const updateTask = async (req, res) =>{
     try{
-        console.log(req.body.task);
+        //console.log(req.body.task);
         const task = await Task.findOneAndUpdate(
             {_id: req.params.id, owner: req.session.account._id},
             {task: req.body.task},
