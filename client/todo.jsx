@@ -3,7 +3,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const {useState, useEffect} = React;
 const {createRoot} = require('react-dom/client');
-import {Clock} from './timer.jsx';
+const {Clock} = require('./timer.jsx');
 
 
 //Sample code from repository
@@ -41,13 +41,18 @@ const TodoForm = (props) => {
 const EditTodoForm = (props) => {
     return (
         <form id='editForm'
-            onSubmit={(e) => handleTodo(e, props.triggerReload)}
+            onSubmit={(e) => {
+                e.preventDefault();
+                const newTask = e.target.querySelector('#editTask').value;
+                if(newTask) props.onSubmit(newTask);
+                console.log(newTask);
+            }}
             name='editForm'
             action='/editTodo'
             method='PATCH'
             className='todoForm'>
                 <label htmlFor='task'>Task: </label>
-                <input id='task' type='text' name='task' placeholder='Task'/>
+                <input id='editTask' type='text' name='task' placeholder='Task'/>
                 <input className='submitTodo' type='submit' value='Submit' />
             </form>
     );
@@ -85,10 +90,14 @@ const TodoList = (props) => {
                 triggerReload();
         };
 
-        const updateTodo = async () => {
+        const updateTodo = async (newTask) => {
             console.log(`/editTodo/${todo._id}`);
+            const taskJson = JSON.stringify({task: newTask});
+            console.log(taskJson);
             const response = await fetch(`/editTodo/${todo._id}`, {
                 method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: taskJson,
             });
             if(response.status === 204){
                 triggerReload();
@@ -105,14 +114,19 @@ const TodoList = (props) => {
                 <button onClick={handleDelete}>Remove</button>
                 <button onClick={() => setEdit(!edited)}>Edit</button>
 
-                {edited && (<EditTodoForm/>)}
+                {edited && (<EditTodoForm onSubmit={(newTask) => {
+                    console.log(newTask);
+                    updateTodo(newTask);
+                    setEdit(false);
+                }}
+                />)}
             </div>
         );
     }
 
     const todo = todos.map(todo => {
         return (
-            <TodoItem key={todo.id} todo={todo} triggerReload={props.triggerReload}/>
+            <TodoItem key={todo._id} todo={todo} triggerReload={props.triggerReload}/>
         );
     });
 

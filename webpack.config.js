@@ -16,7 +16,8 @@ module.exports = {
             },
         ],
     },
-    mode: 'production',
+    devtool: 'source-map',
+    mode: 'development',
     watchOptions: {
         aggregateTimeout: 200,
     },
