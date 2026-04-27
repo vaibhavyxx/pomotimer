@@ -79,29 +79,18 @@ function MyTimer({
   const handleDurationChange = newDuration => {
     const time = new Date();
     time.setSeconds(time.getSeconds() + newDuration);
+    console.log(newDuration);
     restart(time, false);
   };
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      textAlign: 'center'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Work"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Work"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       fontSize: '100px'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, minutes), ":", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, seconds)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, isRunning ? 'Running' : 'Not running'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    onClick: start
-  }, "Start"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    onClick: pause
-  }, "Pause"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    onClick: resume
-  }, "Resume"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, minutes), ":", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, seconds)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
-      const time = new Date();
-      time.setSeconds(time.getSeconds() + 300);
-      restart(time);
+      if (isRunning) pause();else resume();
     }
-  }, "Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
+  }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
     onDurationChange: handleDurationChange
   }));
 }
@@ -118,7 +107,7 @@ const ClockSetting = ({
     id: "clockForm",
     onSubmit: e => handleTodo(e, props.triggerReload),
     name: "clockForm",
-    action: "/clockSetting",
+    action: "/setDuration",
     method: "POST",
     className: "clockForm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {

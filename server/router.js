@@ -8,7 +8,9 @@ const router = (app) => {
 
     app.delete('/todo/:id', mid.requiresLogin, controllers.Task.deleteTask);
     app.patch('/editTodo/:id', mid.requiresLogin, controllers.Task.updateTask);
-    app.get('/todo', mid.requiresLogin, controllers.Task.makerPage);   
+    app.get('/todo', mid.requiresLogin, controllers.Task.makerPage);
+
+    app.get('/setDuration', controllers.Time.updateTime);
 
     app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
     app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);

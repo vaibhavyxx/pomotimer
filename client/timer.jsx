@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {useTimer} from 'react-timer-hook';
 
 function MyTimer({ expiryTimestamp }) {
@@ -15,25 +15,21 @@ function MyTimer({ expiryTimestamp }) {
    const handleDurationChange = (newDuration) => {
         const time = new Date();
         time.setSeconds(time.getSeconds() + newDuration); 
+        console.log(newDuration);
         restart(time, false); 
     };
 
   return (
-    <div style={{textAlign: 'center'}}>
+    <div>
       <h1>Work</h1>
       <div style={{fontSize: '100px'}}>
         <span>{minutes}</span>:<span>{seconds}</span>
       </div>
-      <p>{isRunning ? 'Running' : 'Not running'}</p>
-      <button onClick={start}>Start</button>
-      <button onClick={pause}>Pause</button>
-      <button onClick={resume}>Resume</button>
-      <button onClick={() => {
-        const time = new Date();
-        time.setSeconds(time.getSeconds() + 300);
-        restart(time)
-      }}>Restart</button>
-
+      <button onClick={()=> {
+        if(isRunning) pause();
+        else resume();
+      }}>{isRunning? 'Pause':'Play'}</button>
+      <button> Restart</button>
       <ClockSetting onDurationChange={handleDurationChange}/>
     </div>
   );
@@ -52,7 +48,7 @@ const ClockSetting = ({onDurationChange}) => {
         <form id='clockForm'
             onSubmit={(e) => handleTodo(e, props.triggerReload)}
             name='clockForm'
-            action='/clockSetting'
+            action='/setDuration'
             method='POST'
             className='clockForm'>
                 <label htmlFor='duration'>Duration: </label>

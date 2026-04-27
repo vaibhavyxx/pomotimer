@@ -5,7 +5,6 @@ const {useState, useEffect} = React;
 const {createRoot} = require('react-dom/client');
 const {Clock} = require('./timer.jsx');
 
-
 //Sample code from repository
 const handleTodo = (e, onTaskAdded) => {
     e.preventDefault();

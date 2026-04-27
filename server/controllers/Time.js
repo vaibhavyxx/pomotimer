@@ -14,6 +14,7 @@ const getTime = async (req, res) => {
     }
 };
 
+//fetches time value to update the value
 const updateTime = async (req, res) => {
     try{
         const time = await Time.findOneAndUpdate(
