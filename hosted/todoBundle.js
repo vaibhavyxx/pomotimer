@@ -109,7 +109,6 @@ const ClockSetting = ({
   const handleSubmit = e => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
-    console.log('duration: ' + dur);
     if (!dur) return;
     fetch('/setDuration', {
       method: 'PATCH',
@@ -272,11 +271,9 @@ const TodoList = props => {
       if (response.status === 204) triggerReload();
     };
     const updateTodo = async newTask => {
-      //console.log(`/editTodo/${todo._id}`);
       const taskJson = JSON.stringify({
         task: newTask
       });
-      //console.log(taskJson);
       const response = await fetch(`/editTodo/${todo._id}`, {
         method: 'PATCH',
         headers: {

@@ -46,7 +46,6 @@ const ClockSetting = ({onDurationChange}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
-    console.log('duration: '+ dur);
     if(!dur) return;
 
     fetch('/setDuration', {
