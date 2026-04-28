@@ -11,6 +11,7 @@ const router = (app) => {
     app.get('/todo', mid.requiresLogin, controllers.Task.makerPage);
 
     app.post('/postDuration', controllers.Time.updateTime);
+    app.patch('/postDuration', controllers.Time.updateTime);
 
     app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
     app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);

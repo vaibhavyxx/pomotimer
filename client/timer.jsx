@@ -48,15 +48,21 @@ const ClockSetting = ({onDurationChange}) => {
     const dur = e.target.querySelector('#duration').value;
     console.log('duration: '+ dur);
     if(!dur) return;
-    onDurationChange(Number(dur)* 60);  //converts to seconds
 
+    fetch('/setDuration', {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({time: dur}),
+    });
+
+    onDurationChange(Number(dur)* 60);  //converts to seconds
   };
+
     return (
         <form id='clockForm'
-            onSubmit={(e) => handleTodo(e, props.triggerReload)}
+            onSubmit={handleSubmit}
             name='clockForm'
-            action='/postDuration'
-            method='POST'
+            method='PATCH'
             className='clockForm'>
                 <label htmlFor='duration'>Duration: </label>
                 <input id='duration' type='input' min={1} name='duration' placeholder='Duration'/>

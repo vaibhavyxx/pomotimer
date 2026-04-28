@@ -17,14 +17,22 @@ const getTime = async (req, res) => {
 //fetches time value to update the value
 const updateTime = async (req, res) => {
     try{
+        //console.log(`req body: ${req.body}, time: ${req.body.time}`);
         const time = await Time.findOneAndUpdate(
             {_id: req.params.id, owner: req.session.account._id},
             {time: req.body.time},
-            {new: true},
+            {new: true, upsert: true},
         );
-        console.log(time);
+        
         if(!time){
-            return res.status(401).json({error: 'Invalid'});
+            //create one instead
+            const timeData = {
+                time: req.body.time,
+                owner: req.session.account._id,
+            };
+            const newTime = new Time(timeData);
+            await newTime.save();
+            return res.status(201).json({time: timeData.time});
         }
         return res.status(204).json({status: 'success'});
     }catch(err){

@@ -90,9 +90,9 @@ const TodoList = (props) => {
         };
 
         const updateTodo = async (newTask) => {
-            console.log(`/editTodo/${todo._id}`);
+            //console.log(`/editTodo/${todo._id}`);
             const taskJson = JSON.stringify({task: newTask});
-            console.log(taskJson);
+            //console.log(taskJson);
             const response = await fetch(`/editTodo/${todo._id}`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},

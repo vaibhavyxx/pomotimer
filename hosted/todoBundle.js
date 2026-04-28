@@ -111,14 +111,22 @@ const ClockSetting = ({
     const dur = e.target.querySelector('#duration').value;
     console.log('duration: ' + dur);
     if (!dur) return;
+    fetch('/setDuration', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        time: dur
+      })
+    });
     onDurationChange(Number(dur) * 60); //converts to seconds
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
     id: "clockForm",
-    onSubmit: e => (0,_todo_jsx__WEBPACK_IMPORTED_MODULE_2__.handleTodo)(e, props.triggerReload),
+    onSubmit: handleSubmit,
     name: "clockForm",
-    action: "/postDuration",
-    method: "POST",
+    method: "PATCH",
     className: "clockForm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
     htmlFor: "duration"
@@ -264,11 +272,11 @@ const TodoList = props => {
       if (response.status === 204) triggerReload();
     };
     const updateTodo = async newTask => {
-      console.log(`/editTodo/${todo._id}`);
+      //console.log(`/editTodo/${todo._id}`);
       const taskJson = JSON.stringify({
         task: newTask
       });
-      console.log(taskJson);
+      //console.log(taskJson);
       const response = await fetch(`/editTodo/${todo._id}`, {
         method: 'PATCH',
         headers: {
