@@ -98,7 +98,7 @@ function MyTimer({
   expiryTimestamp,
   period
 }) {
-  const [play] = (0,use_sound__WEBPACK_IMPORTED_MODULE_3__.useSound)('../hosted/sounds/beep.mp3');
+  const [play] = (0,use_sound__WEBPACK_IMPORTED_MODULE_3__.useSound)('/assets/sounds/beep.mp3');
   const {
     seconds,
     minutes,

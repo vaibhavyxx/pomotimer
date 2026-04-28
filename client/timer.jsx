@@ -31,7 +31,7 @@ const newTime = (period) => {
 }
 
 function MyTimer({ expiryTimestamp, period }) {
-  const [play] = useSound('../hosted/sounds/beep.mp3');
+  const [play] = useSound('/assets/sounds/beep.mp3');
   const {
     seconds,
     minutes,
