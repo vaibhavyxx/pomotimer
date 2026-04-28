@@ -30615,7 +30615,13 @@ const init = () => {
   const signupButton = document.getElementById('signupButton');
   const changeButton = document.getElementById('changePassButton');
   const root = createRoot(document.getElementById('content'));
-  root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
+  changeButton.addEventListener('click', e => {
+    e.preventDefault();
+    root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
+    return false;
+  });
+  //root.render(<ChangePassword />);
+
   loginButton.addEventListener('click', e => {
     e.preventDefault();
     root.render(/*#__PURE__*/React.createElement(LoginWindow, null));

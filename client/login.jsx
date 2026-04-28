@@ -132,7 +132,12 @@ const init = () => {
 
     const root = createRoot(document.getElementById('content'));
     
-    root.render(<ChangePassword />);
+    changeButton.addEventListener('click', (e)=> {
+        e.preventDefault();
+        root.render(<ChangePassword />);
+        return false;
+    });
+    //root.render(<ChangePassword />);
     
     loginButton.addEventListener('click', (e)=> {
         e.preventDefault();
