@@ -59,10 +59,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_timer_hook__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-timer-hook */ "./node_modules/react-timer-hook/dist/index.js");
 /* harmony import */ var react_timer_hook__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_timer_hook__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _todo_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todo.jsx */ "./client/todo.jsx");
+/* harmony import */ var use_sound__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! use-sound */ "./node_modules/use-sound/dist/use-sound.esm.js");
 
 
 
-let workPeriod = 0;
+
+
 //loads time from the server if the user has changed its settings
 const useLoadTime = () => {
   const [timeValue, setTimeValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null); //default
@@ -71,6 +73,7 @@ const useLoadTime = () => {
     const loadTime = async () => {
       const response = await fetch('/getTime');
       const data = await response.json();
+      console.log(data);
       if (data.time.length > 0) {
         setTimeValue(data.time[0].time * 60);
       } else {
@@ -84,10 +87,18 @@ const useLoadTime = () => {
     setTimeValue
   };
 };
+
+//Takes in the new duration value and returns a time object
+const newTime = period => {
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + period);
+  return time;
+};
 function MyTimer({
   expiryTimestamp,
   period
 }) {
+  const [play] = (0,use_sound__WEBPACK_IMPORTED_MODULE_3__.useSound)('../hosted/sounds/beep.mp3');
   const {
     seconds,
     minutes,
@@ -99,10 +110,12 @@ function MyTimer({
   } = (0,react_timer_hook__WEBPACK_IMPORTED_MODULE_1__.useTimer)({
     expiryTimestamp,
     autoStart: false,
-    onExpire: () => console.warn('onExpire called')
+    onExpire: () => {
+      play();
+    }
   });
   const handleDurationChange = newDuration => {
-    restart(period, false);
+    restart(newTime(newDuration), false);
   };
   let timeString = `${String(minutes)}:${String(seconds).padStart(2, '0')}`;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -114,9 +127,7 @@ function MyTimer({
     }
   }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
-      const time = new Date();
-      time.setSeconds(time.getSeconds() + period);
-      restart(time, true);
+      restart(newTime(period), true);
     }
   }, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
     onDurationChange: handleDurationChange
@@ -129,6 +140,7 @@ const ClockSetting = ({
   const handleSubmit = e => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
+    console.log(dur);
     if (!dur) return;
 
     //TODO: Replace it with helper function
@@ -30732,6 +30744,172 @@ if (false) // removed by dead control flow
 }
 
 
+/***/ },
+
+/***/ "./node_modules/use-sound/dist/use-sound.esm.js"
+/*!******************************************************!*\
+  !*** ./node_modules/use-sound/dist/use-sound.esm.js ***!
+  \******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   useSound: () => (/* binding */ useSound)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function _extends() {
+  return _extends = Object.assign ? Object.assign.bind() : function (n) {
+    for (var e = 1; e < arguments.length; e++) {
+      var t = arguments[e];
+      for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]);
+    }
+    return n;
+  }, _extends.apply(null, arguments);
+}
+function _objectWithoutPropertiesLoose(r, e) {
+  if (null == r) return {};
+  var t = {};
+  for (var n in r) if ({}.hasOwnProperty.call(r, n)) {
+    if (-1 !== e.indexOf(n)) continue;
+    t[n] = r[n];
+  }
+  return t;
+}
+
+function useOnMount(callback) {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(callback, []);
+}
+
+var _excluded = ["id", "volume", "playbackRate", "soundEnabled", "interrupt", "onload"];
+function useSound(src, _temp) {
+  var _ref = _temp === void 0 ? {} : _temp,
+    _ref$volume = _ref.volume,
+    volume = _ref$volume === void 0 ? 1 : _ref$volume,
+    _ref$playbackRate = _ref.playbackRate,
+    playbackRate = _ref$playbackRate === void 0 ? 1 : _ref$playbackRate,
+    _ref$soundEnabled = _ref.soundEnabled,
+    soundEnabled = _ref$soundEnabled === void 0 ? true : _ref$soundEnabled,
+    _ref$interrupt = _ref.interrupt,
+    interrupt = _ref$interrupt === void 0 ? false : _ref$interrupt,
+    onload = _ref.onload,
+    delegated = _objectWithoutPropertiesLoose(_ref, _excluded);
+  var HowlConstructor = react__WEBPACK_IMPORTED_MODULE_0___default().useRef(null);
+  var isMounted = react__WEBPACK_IMPORTED_MODULE_0___default().useRef(false);
+  var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default().useState(null),
+    duration = _React$useState[0],
+    setDuration = _React$useState[1];
+  var _React$useState2 = react__WEBPACK_IMPORTED_MODULE_0___default().useState(null),
+    sound = _React$useState2[0],
+    setSound = _React$useState2[1];
+  var handleLoad = function handleLoad() {
+    if (typeof onload === 'function') {
+      // @ts-ignore
+      onload.call(this);
+    }
+    if (isMounted.current) {
+      // @ts-ignore
+      setDuration(this.duration() * 1000);
+    }
+    // @ts-ignore
+    setSound(this);
+  };
+  // We want to lazy-load Howler, since sounds can't play on load anyway.
+  useOnMount(function () {
+    __webpack_require__.e(/*! import() */ "vendors-node_modules_howler_dist_howler_js").then(__webpack_require__.t.bind(__webpack_require__, /*! howler */ "./node_modules/howler/dist/howler.js", 23)).then(function (mod) {
+      if (!isMounted.current) {
+        var _mod$Howl;
+        // Depending on the module system used, `mod` might hold
+        // the export directly, or it might be under `default`.
+        HowlConstructor.current = (_mod$Howl = mod.Howl) !== null && _mod$Howl !== void 0 ? _mod$Howl : mod["default"].Howl;
+        isMounted.current = true;
+        new HowlConstructor.current(_extends({
+          src: Array.isArray(src) ? src : [src],
+          volume: volume,
+          rate: playbackRate,
+          onload: handleLoad
+        }, delegated));
+      }
+    });
+    return function () {
+      isMounted.current = false;
+    };
+  });
+  // When the `src` changes, we have to do a whole thing where we recreate
+  // the Howl instance. This is because Howler doesn't expose a way to
+  // tweak the sound
+  react__WEBPACK_IMPORTED_MODULE_0___default().useEffect(function () {
+    if (HowlConstructor.current && sound) {
+      setSound(new HowlConstructor.current(_extends({
+        src: Array.isArray(src) ? src : [src],
+        volume: volume,
+        onload: handleLoad
+      }, delegated)));
+    }
+    // The linter wants to run this effect whenever ANYTHING changes,
+    // but very specifically I only want to recreate the Howl instance
+    // when the `src` changes. Other changes should have no effect.
+    // Passing array to the useEffect dependencies list will result in
+    // ifinite loop so we need to stringify it, for more details check
+    // https://github.com/facebook/react/issues/14476#issuecomment-471199055
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(src)]);
+  // Whenever volume/playbackRate are changed, change those properties
+  // on the sound instance.
+  react__WEBPACK_IMPORTED_MODULE_0___default().useEffect(function () {
+    if (sound) {
+      sound.volume(volume);
+      // HACK: When a sprite is defined, `sound.rate()` throws an error, because Howler tries to reset the "_default" sprite, which doesn't exist. This is likely a bug within Howler, but I don’t have the bandwidth to investigate, so instead, we’re ignoring playbackRate changes when a sprite is defined.
+      if (!delegated.sprite) {
+        sound.rate(playbackRate);
+      }
+    }
+  }, [sound, volume, playbackRate]);
+  var play = react__WEBPACK_IMPORTED_MODULE_0___default().useCallback(function (options) {
+    if (typeof options === 'undefined') {
+      options = {};
+    }
+    if (!sound || !soundEnabled && !options.forceSoundEnabled) {
+      return;
+    }
+    if (interrupt) {
+      sound.stop();
+    }
+    if (options.playbackRate) {
+      sound.rate(options.playbackRate);
+    }
+    sound.play(options.id);
+  }, [sound, soundEnabled, interrupt]);
+  var stop = react__WEBPACK_IMPORTED_MODULE_0___default().useCallback(function (id) {
+    if (!sound) {
+      return;
+    }
+    sound.stop(id);
+  }, [sound]);
+  var pause = react__WEBPACK_IMPORTED_MODULE_0___default().useCallback(function (id) {
+    if (!sound) {
+      return;
+    }
+    sound.pause(id);
+  }, [sound]);
+  var returnedValue = [play, {
+    sound: sound,
+    stop: stop,
+    pause: pause,
+    duration: duration
+  }];
+  return returnedValue;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useSound);
+
+//# sourceMappingURL=use-sound.esm.js.map
+
+
 /***/ }
 
 /******/ 	});
@@ -30769,6 +30947,9 @@ if (false) // removed by dead control flow
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat get default export */
 /******/ 	(() => {
@@ -30779,6 +30960,36 @@ if (false) // removed by dead control flow
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/create fake namespace object */
+/******/ 	(() => {
+/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
+/******/ 		var leafPrototypes;
+/******/ 		// create a fake namespace object
+/******/ 		// mode & 1: value is a module id, require it
+/******/ 		// mode & 2: merge all properties of value into the ns
+/******/ 		// mode & 4: return value when already ns object
+/******/ 		// mode & 16: return value when it's Promise-like
+/******/ 		// mode & 8|1: behave like require
+/******/ 		__webpack_require__.t = function(value, mode) {
+/******/ 			if(mode & 1) value = this(value);
+/******/ 			if(mode & 8) return value;
+/******/ 			if(typeof value === 'object' && value) {
+/******/ 				if((mode & 4) && value.__esModule) return value;
+/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
+/******/ 			}
+/******/ 			var ns = Object.create(null);
+/******/ 			__webpack_require__.r(ns);
+/******/ 			var def = {};
+/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
+/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
+/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
+/******/ 			}
+/******/ 			def['default'] = () => (value);
+/******/ 			__webpack_require__.d(ns, def);
+/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -30794,9 +31005,88 @@ if (false) // removed by dead control flow
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/ensure chunk */
+/******/ 	(() => {
+/******/ 		__webpack_require__.f = {};
+/******/ 		// This file contains only the entry chunk.
+/******/ 		// The chunk loading function for additional chunks
+/******/ 		__webpack_require__.e = (chunkId) => {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+/******/ 				__webpack_require__.f[key](chunkId, promises);
+/******/ 				return promises;
+/******/ 			}, []));
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get javascript chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return "" + chunkId + "Bundle.js";
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/load script */
+/******/ 	(() => {
+/******/ 		var inProgress = {};
+/******/ 		var dataWebpackPrefix = "domomaker:";
+/******/ 		// loadScript function to load a script via script tag
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
+/******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
+/******/ 			var script, needAttach;
+/******/ 			if(key !== undefined) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				for(var i = 0; i < scripts.length; i++) {
+/******/ 					var s = scripts[i];
+/******/ 					if(s.getAttribute("src") == url || s.getAttribute("data-webpack") == dataWebpackPrefix + key) { script = s; break; }
+/******/ 				}
+/******/ 			}
+/******/ 			if(!script) {
+/******/ 				needAttach = true;
+/******/ 				script = document.createElement('script');
+/******/ 		
+/******/ 				script.charset = 'utf-8';
+/******/ 				if (__webpack_require__.nc) {
+/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 				}
+/******/ 				script.setAttribute("data-webpack", dataWebpackPrefix + key);
+/******/ 		
+/******/ 				script.src = url;
+/******/ 			}
+/******/ 			inProgress[url] = [done];
+/******/ 			var onScriptComplete = (prev, event) => {
+/******/ 				// avoid mem leaks in IE.
+/******/ 				script.onerror = script.onload = null;
+/******/ 				clearTimeout(timeout);
+/******/ 				var doneFns = inProgress[url];
+/******/ 				delete inProgress[url];
+/******/ 				script.parentNode && script.parentNode.removeChild(script);
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
+/******/ 				if(prev) return prev(event);
+/******/ 			}
+/******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
+/******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
+/******/ 			script.onload = onScriptComplete.bind(null, script.onload);
+/******/ 			needAttach && document.head.appendChild(script);
+/******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -30817,6 +31107,119 @@ if (false) // removed by dead control flow
 /******/ 			if (!module.children) module.children = [];
 /******/ 			return module;
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript && document.currentScript.tagName.toUpperCase() === 'SCRIPT')
+/******/ 				scriptUrl = document.currentScript.src;
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && (!scriptUrl || !/^http(s?):/.test(scriptUrl))) scriptUrl = scripts[i--].src;
+/******/ 				}
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/^blob:/, "").replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"todo": 0
+/******/ 		};
+/******/ 		
+/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
+/******/ 				// JSONP chunk loading for javascript
+/******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
+/******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
+/******/ 		
+/******/ 					// a Promise means "currently loading".
+/******/ 					if(installedChunkData) {
+/******/ 						promises.push(installedChunkData[2]);
+/******/ 					} else {
+/******/ 						if(true) { // all chunks have JS
+/******/ 							// setup Promise in chunk cache
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
+/******/ 							promises.push(installedChunkData[2] = promise);
+/******/ 		
+/******/ 							// start chunk loading
+/******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
+/******/ 							// create error before stack unwound to get useful stacktrace later
+/******/ 							var error = new Error();
+/******/ 							var loadingEnded = (event) => {
+/******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
+/******/ 									installedChunkData = installedChunks[chunkId];
+/******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
+/******/ 									if(installedChunkData) {
+/******/ 										var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 										var realSrc = event && event.target && event.target.src;
+/******/ 										error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
+/******/ 										error.name = 'ChunkLoadError';
+/******/ 										error.type = errorType;
+/******/ 										error.request = realSrc;
+/******/ 										installedChunkData[1](error);
+/******/ 									}
+/******/ 								}
+/******/ 							};
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
+/******/ 						}
+/******/ 					}
+/******/ 				}
+/******/ 		};
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		// no on chunks loaded
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 		
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunkdomomaker"] = self["webpackChunkdomomaker"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
 /******/ 	
 /************************************************************************/

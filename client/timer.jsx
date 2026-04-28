@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {useTime, useTimer} from 'react-timer-hook';
 import { handleTodo } from './todo.jsx';
+import {useSound} from 'use-sound';
 
-let workPeriod = 0;
 //loads time from the server if the user has changed its settings
 const useLoadTime = () => {
   const [timeValue, setTimeValue] = useState(null); //default
@@ -11,6 +11,7 @@ const useLoadTime = () => {
     const loadTime = async () => {
       const response = await fetch('/getTime');
       const data = await response.json();
+      console.log(data);
       if (data.time.length > 0) {
         setTimeValue(data.time[0].time * 60);
       } else{
@@ -22,7 +23,15 @@ const useLoadTime = () => {
   return {timeValue, setTimeValue};
 }
 
+//Takes in the new duration value and returns a time object
+const newTime = (period) => {
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + period);
+  return time;
+}
+
 function MyTimer({ expiryTimestamp, period }) {
+  const [play] = useSound('../hosted/sounds/beep.mp3');
   const {
     seconds,
     minutes,
@@ -31,10 +40,13 @@ function MyTimer({ expiryTimestamp, period }) {
     pause,
     resume,
     restart,
-  } = useTimer({ expiryTimestamp, autoStart:false, onExpire: () => console.warn('onExpire called') });
+  } = useTimer({ expiryTimestamp, autoStart:false, 
+    onExpire: () =>{
+      play();
+    }});
 
    const handleDurationChange = (newDuration) => {
-        restart(period, false); 
+        restart(newTime(newDuration), false); 
     };
 
     let timeString =  `${String(minutes)}:${String(seconds).padStart(2,'0')}`;
@@ -53,9 +65,7 @@ function MyTimer({ expiryTimestamp, period }) {
         else resume();
       }}>{isRunning? 'Pause':'Play'}</button>
       <button onClick={()=>{
-        const time = new Date();
-        time.setSeconds(time.getSeconds() + period);
-        restart(time, true);
+        restart(newTime(period), true);
       }}> Restart</button>
       <ClockSetting onDurationChange={handleDurationChange}/>
     </div>
@@ -67,6 +77,7 @@ const ClockSetting = ({onDurationChange, props}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
+    console.log(dur);
     if(!dur) return;
 
     //TODO: Replace it with helper function
