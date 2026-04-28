@@ -58,6 +58,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_timer_hook__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-timer-hook */ "./node_modules/react-timer-hook/dist/index.js");
 /* harmony import */ var react_timer_hook__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_timer_hook__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _todo_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./todo.jsx */ "./client/todo.jsx");
+
 
 
 function MyTimer({
@@ -93,6 +95,7 @@ function MyTimer({
   }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
       const time = new Date();
+      //set to 5 minutes at the moment
       time.setSeconds(time.getSeconds() + 300);
       restart(time);
     }
@@ -106,14 +109,15 @@ const ClockSetting = ({
   const handleSubmit = e => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
+    console.log('duration: ' + dur);
     if (!dur) return;
     onDurationChange(Number(dur) * 60); //converts to seconds
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
     id: "clockForm",
-    onSubmit: e => handleTodo(e, props.triggerReload),
+    onSubmit: e => (0,_todo_jsx__WEBPACK_IMPORTED_MODULE_2__.handleTodo)(e, props.triggerReload),
     name: "clockForm",
-    action: "/setDuration",
+    action: "/postDuration",
     method: "POST",
     className: "clockForm"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", {
@@ -137,6 +141,202 @@ function Clock() {
     expiryTimestamp: time
   }));
 }
+
+/***/ },
+
+/***/ "./client/todo.jsx"
+/*!*************************!*\
+  !*** ./client/todo.jsx ***!
+  \*************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   handleTodo: () => (/* binding */ handleTodo)
+/* harmony export */ });
+//responsible for tracking user status i.e. logged in
+const helper = __webpack_require__(/*! ./helper.js */ "./client/helper.js");
+const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+const {
+  useState,
+  useEffect
+} = React;
+const {
+  createRoot
+} = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
+const {
+  Clock
+} = __webpack_require__(/*! ./timer.jsx */ "./client/timer.jsx");
+
+//Sample code from repository
+const handleTodo = (e, onTaskAdded) => {
+  e.preventDefault();
+  helper.hideError();
+  const task = e.target.querySelector('#task').value;
+  if (!task) {
+    helper.handleError('All fields are required');
+    return false;
+  }
+  helper.sendPost(e.target.action, {
+    task
+  }, onTaskAdded);
+  e.target.querySelector('#task').value = '';
+  return false;
+};
+
+//functional component
+const TodoForm = props => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "todoForm",
+    onSubmit: e => handleTodo(e, props.triggerReload),
+    name: "todoForm",
+    action: "/todo",
+    method: "POST",
+    className: "todoForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "task"
+  }, "Task: "), /*#__PURE__*/React.createElement("input", {
+    id: "task",
+    type: "text",
+    name: "task",
+    placeholder: "Task"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "submitTodo",
+    type: "submit",
+    value: "Submit"
+  }));
+};
+const EditTodoForm = props => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "editForm",
+    onSubmit: e => {
+      e.preventDefault();
+      const newTask = e.target.querySelector('#editTask').value;
+      if (newTask) props.onSubmit(newTask);
+      console.log(newTask);
+    },
+    name: "editForm",
+    action: "/editTodo",
+    method: "PATCH",
+    className: "todoForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "task"
+  }, "Task: "), /*#__PURE__*/React.createElement("input", {
+    id: "editTask",
+    type: "text",
+    name: "task",
+    placeholder: "Task"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "submitTodo",
+    type: "submit",
+    value: "Submit"
+  }));
+};
+const TodoList = props => {
+  const [todos, setTodo] = useState(props.todo); //todos is an array
+
+  useEffect(() => {
+    const loadTasksFromServer = async () => {
+      const response = await fetch('/getTask');
+      const data = await response.json();
+      setTodo(data.tasks); //new thing
+    };
+    loadTasksFromServer();
+  }, [props.reloadTasks]);
+  if (!todos || todos.length === 0) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "todoList"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "empty"
+    }, "You're all caught up!"));
+  }
+  const TodoItem = ({
+    todo,
+    triggerReload
+  }) => {
+    const [completed, setCompleted] = useState(false);
+    const [edited, setEdit] = useState(false);
+    const handleDelete = async () => {
+      const response = await fetch(`/todo/${todo._id}`, {
+        method: 'DELETE'
+      });
+      if (response.status === 204) triggerReload();
+    };
+    const updateTodo = async newTask => {
+      console.log(`/editTodo/${todo._id}`);
+      const taskJson = JSON.stringify({
+        task: newTask
+      });
+      console.log(taskJson);
+      const response = await fetch(`/editTodo/${todo._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: taskJson
+      });
+      if (response.status === 204) {
+        triggerReload();
+      }
+    };
+
+    //broken transistion
+    return /*#__PURE__*/React.createElement("div", {
+      className: "todo"
+    }, /*#__PURE__*/React.createElement("h3", {
+      style: {
+        textDecoration: completed ? 'line-through' : 'none'
+      }
+    }, todo.task), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setCompleted(!completed)
+    }, completed ? 'Undo' : 'Done'), /*#__PURE__*/React.createElement("button", {
+      onClick: handleDelete
+    }, "Remove"), /*#__PURE__*/React.createElement("button", {
+      onClick: () => setEdit(!edited)
+    }, "Edit"), edited && /*#__PURE__*/React.createElement(EditTodoForm, {
+      onSubmit: newTask => {
+        console.log(newTask);
+        updateTodo(newTask);
+        setEdit(false);
+      }
+    }));
+  };
+  const todo = todos.map(todo => {
+    return /*#__PURE__*/React.createElement(TodoItem, {
+      key: todo._id,
+      todo: todo,
+      triggerReload: props.triggerReload
+    });
+  });
+
+  //renders every single element in the list
+  return /*#__PURE__*/React.createElement("div", {
+    className: "taskList"
+  }, todo);
+};
+
+//keeping track of the submit button and every time the user triggers, it reloads the doms
+//this should go in a separate class
+const App = () => {
+  const [reloadTasks, setReloadTasks] = useState(false);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Clock, null), /*#__PURE__*/React.createElement("div", {
+    id: "addTodo"
+  }, /*#__PURE__*/React.createElement(TodoForm, {
+    triggerReload: () => setReloadTasks(!reloadTasks)
+  })), /*#__PURE__*/React.createElement("div", {
+    id: "todo"
+  }, /*#__PURE__*/React.createElement(TodoList, {
+    todo: [],
+    reloadTasks: reloadTasks,
+    triggerReload: () => setReloadTasks(!reloadTasks)
+  })));
+};
+const init = () => {
+  const root = createRoot(document.getElementById('app'));
+  root.render(/*#__PURE__*/React.createElement(App, null));
+};
+window.onload = init;
 
 /***/ },
 
@@ -30585,196 +30785,12 @@ if (false) // removed by dead control flow
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
-(() => {
-/*!*************************!*\
-  !*** ./client/todo.jsx ***!
-  \*************************/
-//responsible for tracking user status i.e. logged in
-const helper = __webpack_require__(/*! ./helper.js */ "./client/helper.js");
-const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-const {
-  useState,
-  useEffect
-} = React;
-const {
-  createRoot
-} = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-const {
-  Clock
-} = __webpack_require__(/*! ./timer.jsx */ "./client/timer.jsx");
-
-//Sample code from repository
-const handleTodo = (e, onTaskAdded) => {
-  e.preventDefault();
-  helper.hideError();
-  const task = e.target.querySelector('#task').value;
-  if (!task) {
-    helper.handleError('All fields are required');
-    return false;
-  }
-  helper.sendPost(e.target.action, {
-    task
-  }, onTaskAdded);
-  e.target.querySelector('#task').value = '';
-  return false;
-};
-
-//functional component
-const TodoForm = props => {
-  return /*#__PURE__*/React.createElement("form", {
-    id: "todoForm",
-    onSubmit: e => handleTodo(e, props.triggerReload),
-    name: "todoForm",
-    action: "/todo",
-    method: "POST",
-    className: "todoForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "task"
-  }, "Task: "), /*#__PURE__*/React.createElement("input", {
-    id: "task",
-    type: "text",
-    name: "task",
-    placeholder: "Task"
-  }), /*#__PURE__*/React.createElement("input", {
-    className: "submitTodo",
-    type: "submit",
-    value: "Submit"
-  }));
-};
-const EditTodoForm = props => {
-  return /*#__PURE__*/React.createElement("form", {
-    id: "editForm",
-    onSubmit: e => {
-      e.preventDefault();
-      const newTask = e.target.querySelector('#editTask').value;
-      if (newTask) props.onSubmit(newTask);
-      console.log(newTask);
-    },
-    name: "editForm",
-    action: "/editTodo",
-    method: "PATCH",
-    className: "todoForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "task"
-  }, "Task: "), /*#__PURE__*/React.createElement("input", {
-    id: "editTask",
-    type: "text",
-    name: "task",
-    placeholder: "Task"
-  }), /*#__PURE__*/React.createElement("input", {
-    className: "submitTodo",
-    type: "submit",
-    value: "Submit"
-  }));
-};
-const TodoList = props => {
-  const [todos, setTodo] = useState(props.todo); //todos is an array
-
-  useEffect(() => {
-    const loadTasksFromServer = async () => {
-      const response = await fetch('/getTask');
-      const data = await response.json();
-      setTodo(data.tasks); //new thing
-    };
-    loadTasksFromServer();
-  }, [props.reloadTasks]);
-  if (!todos || todos.length === 0) {
-    return /*#__PURE__*/React.createElement("div", {
-      className: "todoList"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "empty"
-    }, "You're all caught up!"));
-  }
-  const TodoItem = ({
-    todo,
-    triggerReload
-  }) => {
-    const [completed, setCompleted] = useState(false);
-    const [edited, setEdit] = useState(false);
-    const handleDelete = async () => {
-      const response = await fetch(`/todo/${todo._id}`, {
-        method: 'DELETE'
-      });
-      if (response.status === 204) triggerReload();
-    };
-    const updateTodo = async newTask => {
-      console.log(`/editTodo/${todo._id}`);
-      const taskJson = JSON.stringify({
-        task: newTask
-      });
-      console.log(taskJson);
-      const response = await fetch(`/editTodo/${todo._id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: taskJson
-      });
-      if (response.status === 204) {
-        triggerReload();
-      }
-    };
-
-    //broken transistion
-    return /*#__PURE__*/React.createElement("div", {
-      className: "todo"
-    }, /*#__PURE__*/React.createElement("h3", {
-      style: {
-        textDecoration: completed ? 'line-through' : 'none'
-      }
-    }, todo.task), /*#__PURE__*/React.createElement("button", {
-      onClick: () => setCompleted(!completed)
-    }, completed ? 'Undo' : 'Done'), /*#__PURE__*/React.createElement("button", {
-      onClick: handleDelete
-    }, "Remove"), /*#__PURE__*/React.createElement("button", {
-      onClick: () => setEdit(!edited)
-    }, "Edit"), edited && /*#__PURE__*/React.createElement(EditTodoForm, {
-      onSubmit: newTask => {
-        console.log(newTask);
-        updateTodo(newTask);
-        setEdit(false);
-      }
-    }));
-  };
-  const todo = todos.map(todo => {
-    return /*#__PURE__*/React.createElement(TodoItem, {
-      key: todo._id,
-      todo: todo,
-      triggerReload: props.triggerReload
-    });
-  });
-
-  //renders every single element in the list
-  return /*#__PURE__*/React.createElement("div", {
-    className: "taskList"
-  }, todo);
-};
-
-//keeping track of the submit button and every time the user triggers, it reloads the doms
-//this should go in a separate class
-const App = () => {
-  const [reloadTasks, setReloadTasks] = useState(false);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Clock, null), /*#__PURE__*/React.createElement("div", {
-    id: "addTodo"
-  }, /*#__PURE__*/React.createElement(TodoForm, {
-    triggerReload: () => setReloadTasks(!reloadTasks)
-  })), /*#__PURE__*/React.createElement("div", {
-    id: "todo"
-  }, /*#__PURE__*/React.createElement(TodoList, {
-    todo: [],
-    reloadTasks: reloadTasks,
-    triggerReload: () => setReloadTasks(!reloadTasks)
-  })));
-};
-const init = () => {
-  const root = createRoot(document.getElementById('app'));
-  root.render(/*#__PURE__*/React.createElement(App, null));
-};
-window.onload = init;
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./client/todo.jsx");
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=todoBundle.js.map

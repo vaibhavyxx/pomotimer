@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {useTimer} from 'react-timer-hook';
+import { handleTodo } from './todo.jsx';
 
 function MyTimer({ expiryTimestamp }) {
   const {
@@ -45,6 +46,7 @@ const ClockSetting = ({onDurationChange}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
+    console.log('duration: '+ dur);
     if(!dur) return;
     onDurationChange(Number(dur)* 60);  //converts to seconds
 
@@ -53,7 +55,7 @@ const ClockSetting = ({onDurationChange}) => {
         <form id='clockForm'
             onSubmit={(e) => handleTodo(e, props.triggerReload)}
             name='clockForm'
-            action='/setDuration'
+            action='/postDuration'
             method='POST'
             className='clockForm'>
                 <label htmlFor='duration'>Duration: </label>

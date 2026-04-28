@@ -22,6 +22,7 @@ const updateTime = async (req, res) => {
             {time: req.body.time},
             {new: true},
         );
+        console.log(time);
         if(!time){
             return res.status(401).json({error: 'Invalid'});
         }
