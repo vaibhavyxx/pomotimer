@@ -13,8 +13,8 @@ const router = (app) => {
     app.patch('/setDuration', mid.requiresLogin, controllers.Time.updateTime);
     app.get('/getTime', mid.requiresLogin, controllers.Time.getTime);
 
-    app.get('/changePassword', mid.requiresLogin, controllers.Account.renderPasswordChangePage);
-    app.patch('/changePassword', mid.requiresLogin, controllers.Account.changePassword);
+    app.get('/changePassword', mid.requiresLogout, controllers.Account.renderPasswordChangePage);
+    app.patch('/changePassword', mid.requiresLogout, controllers.Account.changePassword);
 
     app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
     app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
