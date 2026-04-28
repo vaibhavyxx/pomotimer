@@ -29,7 +29,12 @@ function MyTimer({ expiryTimestamp }) {
         if(isRunning) pause();
         else resume();
       }}>{isRunning? 'Pause':'Play'}</button>
-      <button> Restart</button>
+      <button onClick={()=>{
+        const time = new Date;
+        //set to 5 minutes at the moment
+        time.setSeconds(time.getSeconds()+300);
+        restart(time);
+      }}> Restart</button>
       <ClockSetting onDurationChange={handleDurationChange}/>
     </div>
   );

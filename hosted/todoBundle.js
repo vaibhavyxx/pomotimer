@@ -90,7 +90,13 @@ function MyTimer({
     onClick: () => {
       if (isRunning) pause();else resume();
     }
-  }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", null, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
+  }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: () => {
+      const time = new Date();
+      time.setSeconds(time.getSeconds() + 300);
+      restart(time);
+    }
+  }, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
     onDurationChange: handleDurationChange
   }));
 }
