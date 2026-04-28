@@ -95,6 +95,8 @@ function MyTimer({
     onClick: () => {
       const time = new Date();
       //set to 5 minutes at the moment
+      //fetches time here
+
       time.setSeconds(time.getSeconds() + 300);
       restart(time);
     }
@@ -110,6 +112,8 @@ const ClockSetting = ({
     e.preventDefault();
     const dur = e.target.querySelector('#duration').value;
     if (!dur) return;
+
+    //TODO: Replace it with helper function
     fetch('/setDuration', {
       method: 'PATCH',
       headers: {
@@ -141,9 +145,28 @@ const ClockSetting = ({
     value: "Submit"
   }));
 };
-function Clock() {
+function Clock(props) {
+  const [timeValue, setTimeValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null); //default
+
+  //loads time from the server if changed by the user, else is 25 minutes by default
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const loadTime = async () => {
+      const response = await fetch('/getTime');
+      const data = await response.json();
+      console.log(data); //verify
+      if (data.time.length > 0) {
+        setTimeValue(data.time[0].time * 60);
+      } else {
+        setTimeValue(25 * 60);
+      }
+      if (response.status == 204) setTimeValue();
+    };
+    loadTime();
+  }, [props.reloadTime]);
+  if (!timeValue) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Loading...");
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 600);
+  time.setSeconds(time.getSeconds() + timeValue); //sets value here 
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(MyTimer, {
     expiryTimestamp: time
   }));
@@ -221,7 +244,6 @@ const EditTodoForm = props => {
       e.preventDefault();
       const newTask = e.target.querySelector('#editTask').value;
       if (newTask) props.onSubmit(newTask);
-      console.log(newTask);
     },
     name: "editForm",
     action: "/editTodo",
@@ -301,7 +323,6 @@ const TodoList = props => {
       onClick: () => setEdit(!edited)
     }, "Edit"), edited && /*#__PURE__*/React.createElement(EditTodoForm, {
       onSubmit: newTask => {
-        console.log(newTask);
         updateTodo(newTask);
         setEdit(false);
       }
@@ -325,7 +346,10 @@ const TodoList = props => {
 //this should go in a separate class
 const App = () => {
   const [reloadTasks, setReloadTasks] = useState(false);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Clock, null), /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Clock, {
+    reloadTime: reloadTasks,
+    triggerReload: () => setReloadTasks(!reloadTasks)
+  }), /*#__PURE__*/React.createElement("div", {
     id: "addTodo"
   }, /*#__PURE__*/React.createElement(TodoForm, {
     triggerReload: () => setReloadTasks(!reloadTasks)

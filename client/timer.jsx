@@ -37,6 +37,9 @@ function MyTimer({ expiryTimestamp }) {
       <button onClick={()=>{
         const time = new Date;
         //set to 5 minutes at the moment
+        //fetches time here
+
+
         time.setSeconds(time.getSeconds()+300);
         restart(time);
       }}> Restart</button>
@@ -52,6 +55,7 @@ const ClockSetting = ({onDurationChange, props}) => {
     const dur = e.target.querySelector('#duration').value;
     if(!dur) return;
 
+    //TODO: Replace it with helper function
     fetch('/setDuration', {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
@@ -73,9 +77,32 @@ const ClockSetting = ({onDurationChange, props}) => {
     );
 };
 
-export function Clock() {
+export function Clock(props) {
+  const [timeValue, setTimeValue] = useState(null); //default
+
+  //loads time from the server if changed by the user, else is 25 minutes by default
+  useEffect(() => {
+    const loadTime = async () => {
+      const response = await fetch('/getTime');
+      const data = await response.json();
+      console.log(data);  //verify
+      if (data.time.length > 0) {
+        setTimeValue(data.time[0].time * 60);
+      } else{
+        setTimeValue(25 * 60);
+      }
+
+      if(response.status == 204)
+        setTimeValue();
+    };
+    loadTime();
+  }, [props.reloadTime]);
+
+  if(!timeValue) return <div>Loading...</div>;
+
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 600); 
+  time.setSeconds(time.getSeconds() + timeValue);  //sets value here 
+  
   return (
     <div>
       <MyTimer expiryTimestamp={time} />

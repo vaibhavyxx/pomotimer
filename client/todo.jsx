@@ -44,7 +44,6 @@ const EditTodoForm = (props) => {
                 e.preventDefault();
                 const newTask = e.target.querySelector('#editTask').value;
                 if(newTask) props.onSubmit(newTask);
-                console.log(newTask);
             }}
             name='editForm'
             action='/editTodo'
@@ -112,7 +111,6 @@ const TodoList = (props) => {
                 <button onClick={() => setEdit(!edited)}>Edit</button>
 
                 {edited && (<EditTodoForm onSubmit={(newTask) => {
-                    console.log(newTask);
                     updateTodo(newTask);
                     setEdit(false);
                 }}
@@ -141,7 +139,7 @@ const App = () => {
     const [reloadTasks, setReloadTasks] = useState(false);
     return (
         <>
-            <Clock />
+            <Clock reloadTime={reloadTasks} triggerReload={() => setReloadTasks(!reloadTasks)} />
             <div id='addTodo'>
                 <TodoForm triggerReload={() => setReloadTasks(!reloadTasks)}/>
             </div>
