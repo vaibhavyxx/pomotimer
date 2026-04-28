@@ -12,7 +12,7 @@ const handleError = message => {
   document.getElementById('errorMessage').textContent = message;
   document.getElementById('domoMessage').classList.remove('hidden');
 };
-const sendRequest = async (url, data, handler, methodType) => {
+const sendRequest = async (url, data, methodType, handler) => {
   const response = await fetch(url, {
     method: methodType,
     headers: {
@@ -30508,6 +30508,7 @@ const changesPass = e => {
     pass1,
     pass2
   }, 'PATCH');
+  return false;
 };
 
 //creating react components - functional stateless component / FSC
@@ -30618,12 +30619,14 @@ const init = () => {
     root.render(/*#__PURE__*/React.createElement(SignupWindow, null));
     return false;
   });
-
-  /*changeButton.addEventListener('click', (e) =>{ 
-      e.preventDefault();
-      root.render(<ChangePassword />);
-      return false;
-  });*/
+  console.log(changeButton);
+  //if(changeButton){
+  changeButton.addEventListener('click', e => {
+    e.preventDefault();
+    root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
+    return false;
+  });
+  //}
   root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
 };
 window.onload = init;

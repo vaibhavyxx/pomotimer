@@ -15,7 +15,6 @@ const handleLogin = (e) => {
         return false;
     }
 
-    //broken
     helper.sendRequest(e.target.action, {username, pass}, 'POST');
     return false;
 }
@@ -62,6 +61,7 @@ const changesPass = (e) => {
     }
     //sends a patch request
     helper.sendRequest(e.target.action, {oldPass, pass1, pass2}, 'PATCH');
+    return false;
 }
 
 //creating react components - functional stateless component / FSC
@@ -138,11 +138,14 @@ const init = () => {
         return false;
     });
 
-    /*changeButton.addEventListener('click', (e) =>{ 
+    console.log(changeButton);
+    //if(changeButton){
+        changeButton.addEventListener('click', (e) =>{ 
         e.preventDefault();
         root.render(<ChangePassword />);
         return false;
-    });*/
+    });
+    //}
     root.render(<LoginWindow />);
 };
 window.onload = init;

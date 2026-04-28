@@ -57,6 +57,10 @@ const changePassword = async (req, res) => {
     });
 }
 
+const renderPasswordChangePage = (req, res) => {
+    return res.render('changePassword');
+};
+
 const signup = async (req, res) => {
     const username = `${req.body.username}`;
     const pass = `${req.body.pass}`;
@@ -88,4 +92,4 @@ const signup = async (req, res) => {
     }
 };
 
-module.exports = {loginPage, login, logout, signup, renderWelcome, changePassword};
+module.exports = {loginPage, login, logout, signup, renderWelcome, changePassword, renderPasswordChangePage};
