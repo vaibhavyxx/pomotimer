@@ -15,7 +15,8 @@ const handleLogin = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass});
+    //broken
+    helper.sendRequest(e.target.action, {username, pass}, 'POST');
     return false;
 }
 
@@ -36,8 +37,31 @@ const handleSignup = (e) => {
         helper.handleError('Passwords do not match!');
         return false;
     }
-    helper.sendPost(e.target.action, {username, pass, pass2});
+    helper.sendRequest(e.target.action, {username, pass, pass2}, 'POST');
     return false;
+}
+
+const changesPass = (e) => {
+    e.preventDefault();
+    helper.hideError();
+
+    const oldPass = e.target.querySelector('#old-pass').value;
+    const pass1 = e.target.querySelector('#pass-1').value;
+    const pass2 = e.target.querySelector('#pass-2').value;
+
+    if(!pass1 ||  !oldPass){
+        helper.handleError('Enter the new password');
+    }
+    else{
+        if(!pass2){
+            helper.handleError('Retype the new password');
+        }
+    }
+    if(pass1 !== pass2){
+        helper.handleError('Password do not match!');
+    }
+    //sends a patch request
+    helper.sendRequest(e.target.action, {oldPass, pass1, pass2}, 'PATCH');
 }
 
 //creating react components - functional stateless component / FSC
@@ -79,9 +103,27 @@ const SignupWindow = (props) =>{
     );
 };
 
+const ChangePassword = () => {
+    return (
+        <form id="changePassForm"
+            name="changePassForm"
+            onSubmit={changesPass}
+            action='/changePassword'
+            method='PATCH'
+            className='changePassForm'
+        >
+            <input id='old-pass' type='password' name='old-pass' placeholder='Enter the current password'></input> 
+            <input id='pass-1' type='password' name='pass-1' placeholder='Enter new password'></input> 
+            <input id='pass-2' type='password' name='pass-2'placeholder='Enter the password again'></input>
+            <input className='formSubmit' type='submit' value='Change Password'></input>
+        </form>
+    )
+}
+
 const init = () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
+    const changeButton = document.getElementById('changePassButton');
 
     const root = createRoot(document.getElementById('content'));
     loginButton.addEventListener('click', (e)=> {
@@ -95,6 +137,12 @@ const init = () => {
         root.render(<SignupWindow />);
         return false;
     });
+
+    /*changeButton.addEventListener('click', (e) =>{ 
+        e.preventDefault();
+        root.render(<ChangePassword />);
+        return false;
+    });*/
     root.render(<LoginWindow />);
 };
 window.onload = init;

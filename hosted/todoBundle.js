@@ -12,9 +12,9 @@ const handleError = message => {
   document.getElementById('errorMessage').textContent = message;
   document.getElementById('domoMessage').classList.remove('hidden');
 };
-const sendPost = async (url, data, handler) => {
+const sendRequest = async (url, data, handler, methodType) => {
   const response = await fetch(url, {
-    method: 'POST',
+    method: methodType,
     headers: {
       'Content-Type': 'application/json'
     },
@@ -37,7 +37,7 @@ const hideError = () => {
 };
 module.exports = {
   handleError,
-  sendPost,
+  sendRequest,
   hideError
 };
 
@@ -188,9 +188,9 @@ const handleTodo = (e, onTaskAdded) => {
     helper.handleError('All fields are required');
     return false;
   }
-  helper.sendPost(e.target.action, {
+  helper.sendRequest(e.target.action, {
     task
-  }, onTaskAdded);
+  }, onTaskAdded, 'POST');
   e.target.querySelector('#task').value = '';
   return false;
 };

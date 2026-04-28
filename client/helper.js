@@ -4,9 +4,9 @@ const handleError = (message) => {
   document.getElementById('domoMessage').classList.remove('hidden');
 };
 
-const sendPost = async (url, data, handler) => {
+const sendRequest = async (url, data, handler, methodType) => {
   const response = await fetch(url, {
-    method: 'POST',
+    method: methodType,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -33,6 +33,6 @@ const hideError = () => {
 
 module.exports = {
     handleError,
-    sendPost,
+    sendRequest,
     hideError,
 };

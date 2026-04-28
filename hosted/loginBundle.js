@@ -12,9 +12,9 @@ const handleError = message => {
   document.getElementById('errorMessage').textContent = message;
   document.getElementById('domoMessage').classList.remove('hidden');
 };
-const sendPost = async (url, data, handler) => {
+const sendRequest = async (url, data, handler, methodType) => {
   const response = await fetch(url, {
-    method: 'POST',
+    method: methodType,
     headers: {
       'Content-Type': 'application/json'
     },
@@ -37,7 +37,7 @@ const hideError = () => {
 };
 module.exports = {
   handleError,
-  sendPost,
+  sendRequest,
   hideError
 };
 
@@ -30459,10 +30459,10 @@ const handleLogin = e => {
     helper.handleError('Username or password is empty!');
     return false;
   }
-  helper.sendPost(e.target.action, {
+  helper.sendRequest(e.target.action, {
     username,
     pass
-  });
+  }, 'POST');
   return false;
 };
 const handleSignup = e => {
@@ -30479,12 +30479,35 @@ const handleSignup = e => {
     helper.handleError('Passwords do not match!');
     return false;
   }
-  helper.sendPost(e.target.action, {
+  helper.sendRequest(e.target.action, {
     username,
     pass,
     pass2
-  });
+  }, 'POST');
   return false;
+};
+const changesPass = e => {
+  e.preventDefault();
+  helper.hideError();
+  const oldPass = e.target.querySelector('#old-pass').value;
+  const pass1 = e.target.querySelector('#pass-1').value;
+  const pass2 = e.target.querySelector('#pass-2').value;
+  if (!pass1 || !oldPass) {
+    helper.handleError('Enter the new password');
+  } else {
+    if (!pass2) {
+      helper.handleError('Retype the new password');
+    }
+  }
+  if (pass1 !== pass2) {
+    helper.handleError('Password do not match!');
+  }
+  //sends a patch request
+  helper.sendRequest(e.target.action, {
+    oldPass,
+    pass1,
+    pass2
+  }, 'PATCH');
 };
 
 //creating react components - functional stateless component / FSC
@@ -30551,9 +30574,39 @@ const SignupWindow = props => {
     value: "Sign up"
   }));
 };
+const ChangePassword = () => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "changePassForm",
+    name: "changePassForm",
+    onSubmit: changesPass,
+    action: "/changePassword",
+    method: "PATCH",
+    className: "changePassForm"
+  }, /*#__PURE__*/React.createElement("input", {
+    id: "old-pass",
+    type: "password",
+    name: "old-pass",
+    placeholder: "Enter the current password"
+  }), /*#__PURE__*/React.createElement("input", {
+    id: "pass-1",
+    type: "password",
+    name: "pass-1",
+    placeholder: "Enter new password"
+  }), /*#__PURE__*/React.createElement("input", {
+    id: "pass-2",
+    type: "password",
+    name: "pass-2",
+    placeholder: "Enter the password again"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Change Password"
+  }));
+};
 const init = () => {
   const loginButton = document.getElementById('loginButton');
   const signupButton = document.getElementById('signupButton');
+  const changeButton = document.getElementById('changePassButton');
   const root = createRoot(document.getElementById('content'));
   loginButton.addEventListener('click', e => {
     e.preventDefault();
@@ -30565,6 +30618,12 @@ const init = () => {
     root.render(/*#__PURE__*/React.createElement(SignupWindow, null));
     return false;
   });
+
+  /*changeButton.addEventListener('click', (e) =>{ 
+      e.preventDefault();
+      root.render(<ChangePassword />);
+      return false;
+  });*/
   root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
 };
 window.onload = init;

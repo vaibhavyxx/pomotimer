@@ -45,16 +45,8 @@ AccountSchema.statics.toAPI = (doc) => ({
   _id: doc._id,
 });
 
-// Helper function to hash a password
 AccountSchema.statics.generateHash = (password) => bcrypt.hash(password, saltRounds);
 
-/* Helper function for authenticating a password against one already in the
-   database. Essentially when a user logs in, we need to verify that the password
-   they entered matches the one in the database. Since the database stores hashed
-   passwords, we need to get the hash they have stored. We then pass the given password
-   and hashed password to bcrypt's compare function. The compare function hashes the
-   given password the same number of times as the stored password and compares the result.
-*/
 AccountSchema.statics.authenticate = async (username, password, callback) => {
   try {
     const doc = await AccountModel.findOne({username}).exec();
@@ -71,6 +63,24 @@ AccountSchema.statics.authenticate = async (username, password, callback) => {
     return callback(err);
   }
 };
+
+AccountSchema.statics.changePassword = async (username, oldPass, newPass, callback) => {
+  try{
+    const doc = await AccountModel.findOne({username}).exec();
+    if(!doc) return callback(new Error('Account not found'));
+
+    const match = await bcrypt.compare(oldPass, doc.password);
+    if(!match) return callback(new Error('Current password is incorrect'));
+
+    const hash = await bcrypt.hash(newPass, saltRounds); //saltrounds?
+    doc.password = hash;
+    await doc.save();
+
+    return callback(null, doc);
+  }catch(err){
+    return callback(err);
+  }
+}
 
 AccountModel = mongoose.model('Account', AccountSchema);
 module.exports = AccountModel;

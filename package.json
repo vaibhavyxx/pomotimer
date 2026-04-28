@@ -30,10 +30,12 @@
     "express4": "^0.0.1",
     "helmet": "^8.1.0",
     "mongoose": "^8.19.3",
+    "nodemailer": "^8.0.7",
     "react-timer-hook": "^4.0.5",
     "redis": "^5.9.0",
     "serve-favicon": "^2.5.1",
-    "underscore": "^1.13.7"
+    "underscore": "^1.13.7",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

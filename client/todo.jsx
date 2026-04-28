@@ -16,7 +16,7 @@ export const handleTodo = (e, onTaskAdded) => {
         helper.handleError('All fields are required');
         return false;
     }
-    helper.sendPost(e.target.action, {task}, onTaskAdded);
+    helper.sendRequest(e.target.action, {task}, onTaskAdded, 'POST');
      e.target.querySelector('#task').value = '';
     return false;
 };

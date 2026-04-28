@@ -17,7 +17,7 @@ const login = (req, res) => {
         return res.status(400).json({error: 'All fields are required!'});
     }
 
-    return Account.authenticate(username, pass, (err, account) => { //getting an error here
+    return Account.authenticate(username, pass, (err, account) => { 
         if(err || !account){
             return res.status(401).json({error: 'Wrong username or password'});
         }
@@ -33,6 +33,29 @@ const renderWelcome = (req, res) => {
         username: req.session.account.username,
     });
 };
+
+//functionality for the logged in user to change their password
+const changePassword = async (req, res) => {
+    const pass1 = `${req.body.pass1}`;
+    const pass2 = `${req.body.pass2}`;
+    const oldPass = `${req.body.oldPass}`;
+
+    if(!pass1 ){
+            return res.status(400).json({error: 'Enter the new password'});
+        }
+        else{
+            if(!pass2){
+                return res.status(400).json({error: 'Retype the new password'});
+            }
+        }
+        if(pass1 !== pass2){
+            return res.status(400).json({error: 'Password do not match!'});
+        }
+    return Account.changePassword(req.session.account.username, oldPass, pass1, (err) => {
+        if(err) return res.status(400).json({error: err.message});
+        return res.json({message: 'Password changed successfully'});
+    });
+}
 
 const signup = async (req, res) => {
     const username = `${req.body.username}`;
@@ -65,4 +88,4 @@ const signup = async (req, res) => {
     }
 };
 
-module.exports = {loginPage, login, logout, signup, renderWelcome};
+module.exports = {loginPage, login, logout, signup, renderWelcome, changePassword};

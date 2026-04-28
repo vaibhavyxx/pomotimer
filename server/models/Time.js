@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 
+//ties is the duration of the session and its pomosessions
 const TimeSchema = new mongoose.Schema({
     time: {
         type: Number,
         required: true,
         trim: true,
+    },
+    pomodoro : {
+        type: Number,
     },
     owner:{
             type: mongoose.Schema.ObjectId,
