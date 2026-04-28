@@ -30583,17 +30583,23 @@ const ChangePassword = () => {
     action: "/changePassword",
     method: "PATCH",
     className: "changePassForm"
-  }, /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "old-pass"
+  }, "Enter the current password: "), /*#__PURE__*/React.createElement("input", {
     id: "old-pass",
     type: "password",
     name: "old-pass",
     placeholder: "Enter the current password"
-  }), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass-1"
+  }, "Enter the new password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass-1",
     type: "password",
     name: "pass-1",
     placeholder: "Enter new password"
-  }), /*#__PURE__*/React.createElement("input", {
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass-2"
+  }, "Retype the new password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass-2",
     type: "password",
     name: "pass-2",
@@ -30601,7 +30607,7 @@ const ChangePassword = () => {
   }), /*#__PURE__*/React.createElement("input", {
     className: "formSubmit",
     type: "submit",
-    value: "Change Password"
+    value: "Update"
   }));
 };
 const init = () => {
@@ -30620,14 +30626,6 @@ const init = () => {
     root.render(/*#__PURE__*/React.createElement(SignupWindow, null));
     return false;
   });
-  if (changeButton != null) {
-    changeButton.addEventListener('click', e => {
-      e.preventDefault();
-      console.log('hi');
-      root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
-      return false;
-    });
-  }
 };
 window.onload = init;
 })();

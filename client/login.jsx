@@ -112,10 +112,15 @@ const ChangePassword = () => {
             method='PATCH'
             className='changePassForm'
         >
-            <input id='old-pass' type='password' name='old-pass' placeholder='Enter the current password'></input> 
-            <input id='pass-1' type='password' name='pass-1' placeholder='Enter new password'></input> 
-            <input id='pass-2' type='password' name='pass-2'placeholder='Enter the password again'></input>
-            <input className='formSubmit' type='submit' value='Change Password'></input>
+            <label htmlFor='old-pass'>Enter the current password: </label>
+            <input id='old-pass' type='password' name='old-pass' placeholder='Enter the current password' /> 
+
+            <label htmlFor='pass-1'>Enter the new password: </label>
+            <input id='pass-1' type='password' name='pass-1' placeholder='Enter new password'/> 
+
+            <label htmlFor='pass-2'>Retype the new password: </label>
+            <input id='pass-2' type='password' name='pass-2'placeholder='Enter the password again'/>
+            <input className='formSubmit' type='submit' value='Update'></input>
         </form>
     )
 }
