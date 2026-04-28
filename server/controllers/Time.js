@@ -22,7 +22,7 @@ const updateTime = async (req, res) => {
             {time: req.body.time},
             {new: true, upsert: true},
         );
-        return res.status(204).json({status: 'success'});
+        return res.status(204).json({status: 'success', time});
     }catch(err){
         return res.status(500).json({error: err});
     }
