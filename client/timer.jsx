@@ -19,15 +19,16 @@ function MyTimer({ expiryTimestamp }) {
         restart(time, false); 
     };
 
+    let timeString =  `${String(minutes)}:${String(seconds).padStart(2,'0')}`;
+
     useEffect(() => {
-      document.title = `${String(minutes)}:${String(seconds).padStart(2,'0')} - Pomodoro Timer`;
+      document.title = `${timeString} - Pomodoro Timer`;
     }, [minutes, seconds]);
 
   return (
     <div>
-      <h1>Work</h1>
-      <div style={{fontSize: '100px'}}>
-        <span>{minutes}</span>:<span>{seconds}</span>
+      <div>
+        <h1>{timeString}</h1>
       </div>
       <button onClick={()=> {
         if(isRunning) pause();

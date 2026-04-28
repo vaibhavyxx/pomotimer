@@ -83,14 +83,11 @@ function MyTimer({
     time.setSeconds(time.getSeconds() + newDuration);
     restart(time, false);
   };
+  let timeString = `${String(minutes)}:${String(seconds).padStart(2, '0')}`;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    document.title = `${String(minutes)}:${String(seconds).padStart(2, '0')} - Pomodoro Timer`;
+    document.title = `${timeString} - Pomodoro Timer`;
   }, [minutes, seconds]);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Work"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    style: {
-      fontSize: '100px'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, minutes), ":", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, seconds)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, timeString)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
       if (isRunning) pause();else resume();
     }

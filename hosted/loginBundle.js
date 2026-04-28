@@ -30609,6 +30609,7 @@ const init = () => {
   const signupButton = document.getElementById('signupButton');
   const changeButton = document.getElementById('changePassButton');
   const root = createRoot(document.getElementById('content'));
+  root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
   loginButton.addEventListener('click', e => {
     e.preventDefault();
     root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
@@ -30619,15 +30620,14 @@ const init = () => {
     root.render(/*#__PURE__*/React.createElement(SignupWindow, null));
     return false;
   });
-  console.log(changeButton);
-  //if(changeButton){
-  changeButton.addEventListener('click', e => {
-    e.preventDefault();
-    root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
-    return false;
-  });
-  //}
-  root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
+  if (changeButton != null) {
+    changeButton.addEventListener('click', e => {
+      e.preventDefault();
+      console.log('hi');
+      root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
+      return false;
+    });
+  }
 };
 window.onload = init;
 })();

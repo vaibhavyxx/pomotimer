@@ -126,6 +126,9 @@ const init = () => {
     const changeButton = document.getElementById('changePassButton');
 
     const root = createRoot(document.getElementById('content'));
+    
+    root.render(<ChangePassword />);
+    
     loginButton.addEventListener('click', (e)=> {
         e.preventDefault();
         root.render(<LoginWindow />);
@@ -137,16 +140,6 @@ const init = () => {
         root.render(<SignupWindow />);
         return false;
     });
-
-    console.log(changeButton);
-    //if(changeButton){
-        changeButton.addEventListener('click', (e) =>{ 
-        e.preventDefault();
-        root.render(<ChangePassword />);
-        return false;
-    });
-    //}
-    root.render(<LoginWindow />);
 };
 window.onload = init;
 
