@@ -62,8 +62,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+let workPeriod = 0;
+//loads time from the server if the user has changed its settings
+const useLoadTime = () => {
+  const [timeValue, setTimeValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null); //default
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const loadTime = async () => {
+      const response = await fetch('/getTime');
+      const data = await response.json();
+      if (data.time.length > 0) {
+        setTimeValue(data.time[0].time * 60);
+      } else {
+        setTimeValue(25 * 60);
+      }
+    };
+    loadTime();
+  }, []);
+  return {
+    timeValue,
+    setTimeValue
+  };
+};
 function MyTimer({
-  expiryTimestamp
+  expiryTimestamp,
+  period
 }) {
   const {
     seconds,
@@ -79,9 +102,7 @@ function MyTimer({
     onExpire: () => console.warn('onExpire called')
   });
   const handleDurationChange = newDuration => {
-    const time = new Date();
-    time.setSeconds(time.getSeconds() + newDuration);
-    restart(time, false);
+    restart(period, false);
   };
   let timeString = `${String(minutes)}:${String(seconds).padStart(2, '0')}`;
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -94,11 +115,8 @@ function MyTimer({
   }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
       const time = new Date();
-      //set to 5 minutes at the moment
-      //fetches time here
-
-      time.setSeconds(time.getSeconds() + 300);
-      restart(time);
+      time.setSeconds(time.getSeconds() + period);
+      restart(time, true);
     }
   }, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
     onDurationChange: handleDurationChange
@@ -146,29 +164,17 @@ const ClockSetting = ({
   }));
 };
 function Clock(props) {
-  const [timeValue, setTimeValue] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null); //default
-
-  //loads time from the server if changed by the user, else is 25 minutes by default
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const loadTime = async () => {
-      const response = await fetch('/getTime');
-      const data = await response.json();
-      console.log(data); //verify
-      if (data.time.length > 0) {
-        setTimeValue(data.time[0].time * 60);
-      } else {
-        setTimeValue(25 * 60);
-      }
-      if (response.status == 204) setTimeValue();
-    };
-    loadTime();
-  }, [props.reloadTime]);
+  const {
+    timeValue,
+    setTimeValue
+  } = useLoadTime();
   if (!timeValue) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Loading...");
   const time = new Date();
   time.setSeconds(time.getSeconds() + timeValue); //sets value here 
-
+  const t = timeValue;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(MyTimer, {
-    expiryTimestamp: time
+    expiryTimestamp: time,
+    period: timeValue
   }));
 }
 

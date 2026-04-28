@@ -1,8 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import {useTimer} from 'react-timer-hook';
+import {useTime, useTimer} from 'react-timer-hook';
 import { handleTodo } from './todo.jsx';
 
-function MyTimer({ expiryTimestamp }) {
+let workPeriod = 0;
+//loads time from the server if the user has changed its settings
+const useLoadTime = () => {
+  const [timeValue, setTimeValue] = useState(null); //default
+
+  useEffect(() => {
+    const loadTime = async () => {
+      const response = await fetch('/getTime');
+      const data = await response.json();
+      if (data.time.length > 0) {
+        setTimeValue(data.time[0].time * 60);
+      } else{
+        setTimeValue(25 * 60);
+      }
+    };
+    loadTime();
+  }, []);
+  return {timeValue, setTimeValue};
+}
+
+function MyTimer({ expiryTimestamp, period }) {
   const {
     seconds,
     minutes,
@@ -14,9 +34,7 @@ function MyTimer({ expiryTimestamp }) {
   } = useTimer({ expiryTimestamp, autoStart:false, onExpire: () => console.warn('onExpire called') });
 
    const handleDurationChange = (newDuration) => {
-        const time = new Date();
-        time.setSeconds(time.getSeconds() + newDuration); 
-        restart(time, false); 
+        restart(period, false); 
     };
 
     let timeString =  `${String(minutes)}:${String(seconds).padStart(2,'0')}`;
@@ -35,13 +53,9 @@ function MyTimer({ expiryTimestamp }) {
         else resume();
       }}>{isRunning? 'Pause':'Play'}</button>
       <button onClick={()=>{
-        const time = new Date;
-        //set to 5 minutes at the moment
-        //fetches time here
-
-
-        time.setSeconds(time.getSeconds()+300);
-        restart(time);
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + period);
+        restart(time, true);
       }}> Restart</button>
       <ClockSetting onDurationChange={handleDurationChange}/>
     </div>
@@ -78,34 +92,15 @@ const ClockSetting = ({onDurationChange, props}) => {
 };
 
 export function Clock(props) {
-  const [timeValue, setTimeValue] = useState(null); //default
-
-  //loads time from the server if changed by the user, else is 25 minutes by default
-  useEffect(() => {
-    const loadTime = async () => {
-      const response = await fetch('/getTime');
-      const data = await response.json();
-      console.log(data);  //verify
-      if (data.time.length > 0) {
-        setTimeValue(data.time[0].time * 60);
-      } else{
-        setTimeValue(25 * 60);
-      }
-
-      if(response.status == 204)
-        setTimeValue();
-    };
-    loadTime();
-  }, [props.reloadTime]);
-
+  const {timeValue, setTimeValue} = useLoadTime();
   if(!timeValue) return <div>Loading...</div>;
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + timeValue);  //sets value here 
-  
+  const t = timeValue;
   return (
     <div>
-      <MyTimer expiryTimestamp={time} />
+      <MyTimer expiryTimestamp={time} period={timeValue}  />
     </div>
   );
 }

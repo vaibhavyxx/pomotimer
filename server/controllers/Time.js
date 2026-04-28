@@ -5,12 +5,11 @@ const makerPage = (req, res) => {
 };
 
 const getTime = async (req, res) => {
-    try{
-        const query = {owner: req.session.account._id};
-        const docs = await Time.find(query).select('time').lean().exec();
-        return res.json({time: docs});
-    }catch(err){
-        return res.status(500).json({error: err});
+     try {
+        const doc = await Time.findOne({ owner: req.session.account._id });
+        return res.json({ time: doc ? doc.time : 25 * 60 });  
+    } catch(err) {
+        return res.status(500).json({ error: err });
     }
 };
 
