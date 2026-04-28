@@ -23,17 +23,6 @@ const updateTime = async (req, res) => {
             {time: req.body.time},
             {new: true, upsert: true},
         );
-
-        /*if(!time){
-            //create one instead
-            const timeData = {
-                time: req.body.time,
-                owner: req.session.account._id,
-            };
-            const newTime = new Time(timeData);
-            await newTime.save();
-            return res.status(201).json({time: timeData.time});
-        }*/
         return res.status(204).json({status: 'success'});
     }catch(err){
         return res.status(500).json({error: err});

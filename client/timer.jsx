@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useTimer} from 'react-timer-hook';
 import { handleTodo } from './todo.jsx';
 
@@ -16,9 +16,12 @@ function MyTimer({ expiryTimestamp }) {
    const handleDurationChange = (newDuration) => {
         const time = new Date();
         time.setSeconds(time.getSeconds() + newDuration); 
-        console.log(newDuration);
         restart(time, false); 
     };
+
+    useEffect(() => {
+      document.title = `${String(minutes)}:${String(seconds).padStart(2,'0')} - Pomodoro Timer`;
+    }, [minutes, seconds]);
 
   return (
     <div>
@@ -41,7 +44,7 @@ function MyTimer({ expiryTimestamp }) {
   );
 }
 
-const ClockSetting = ({onDurationChange}) => {
+const ClockSetting = ({onDurationChange, props}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,7 +56,6 @@ const ClockSetting = ({onDurationChange}) => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({time: dur}),
     });
-
     onDurationChange(Number(dur)* 60);  //converts to seconds
   };
 

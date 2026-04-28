@@ -81,9 +81,11 @@ function MyTimer({
   const handleDurationChange = newDuration => {
     const time = new Date();
     time.setSeconds(time.getSeconds() + newDuration);
-    console.log(newDuration);
     restart(time, false);
   };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    document.title = `${String(minutes)}:${String(seconds).padStart(2, '0')} - Pomodoro Timer`;
+  }, [minutes, seconds]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, "Work"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       fontSize: '100px'
@@ -104,7 +106,8 @@ function MyTimer({
   }));
 }
 const ClockSetting = ({
-  onDurationChange
+  onDurationChange,
+  props
 }) => {
   const handleSubmit = e => {
     e.preventDefault();
