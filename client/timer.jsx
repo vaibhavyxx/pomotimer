@@ -30,6 +30,7 @@ const newTime = (period) => {
   return time;
 }
 
+//Timer to customise settings and play period
 function MyTimer({ expiryTimestamp, period }) {
   const [play] = useSound('/assets/sounds/beep.mp3');
   const {
@@ -78,7 +79,6 @@ const ClockSetting = ({onDurationChange, props}) => {
     console.log(dur);
     if(!dur) return;
 
-    //TODO: Replace it with helper function
     fetch('/setDuration', {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},

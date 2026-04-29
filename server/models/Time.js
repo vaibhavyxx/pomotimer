@@ -8,7 +8,7 @@ const TimeSchema = new mongoose.Schema({
         trim: true,
     },
     pomodoro : {
-        type: Number,
+        type: Number, //was not implemented in  the final build
     },
     owner:{
             type: mongoose.Schema.ObjectId,

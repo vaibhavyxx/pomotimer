@@ -1,7 +1,6 @@
 //helper functions to be DRY
 const handleError = (message) => {
   document.getElementById('errorMessage').textContent = message;
-  //document.getElementById('domoMessage').classList.remove('hidden');
 };
 
 const sendRequest = async (url, data, methodType, handler) => {
