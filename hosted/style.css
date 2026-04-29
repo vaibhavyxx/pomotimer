@@ -14,7 +14,7 @@ html, body, .formSubmit {
     background-color: #28A5CF;
     color: white;
 }
-h1, h2, h3, p, label, a, .formSubmit, input {
+h1, h2, h3, p, label, a, .formSubmit, input, footer {
     font-family: 'Comic Relief';
 }
 h1{
@@ -94,4 +94,11 @@ nav{
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
+}
+footer{
+    position: fixed;
+    bottom: 1;
+    left: 0;
+    right: 0;
+    text-align: center;
 }
