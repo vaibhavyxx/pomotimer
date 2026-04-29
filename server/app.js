@@ -41,7 +41,7 @@ redisClient.connect().then(() => {
         store: new RedisStore({
             client: redisClient,
         }),
-        secret: 'Domo Arigato',
+        secret: 'ABC',
         resave: false,
         saveUninitialized: false,
     }));
