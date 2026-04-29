@@ -57,9 +57,7 @@ function MyTimer({ expiryTimestamp, period }) {
 
   return (
     <div>
-      <div>
-        <h1>{timeString}</h1>
-      </div>
+      <h1>{timeString}</h1>
       <button onClick={()=> {
         if(isRunning) pause();
         else resume();

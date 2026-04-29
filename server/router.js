@@ -16,13 +16,14 @@ const router = (app) => {
     app.get('/changePassword', mid.requiresLogout, controllers.Account.renderPasswordChangePage);
     app.patch('/changePassword', mid.requiresLogout, controllers.Account.changePassword);
 
-    app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+    app.get('/login', mid.requiresSecure, controllers.Account.loginPage);
+    //app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
     app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
     
     app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
 
     app.get('/logout', mid.requiresLogin, controllers.Account.logout);
-    app.get('/about', mid.requiresLogin, renderWelcome);
+    //app.get('/about', renderWelcome);
 
     app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

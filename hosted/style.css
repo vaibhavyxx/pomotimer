@@ -10,10 +10,67 @@
   font-style: normal;
 }
 
-html, body {
+html, body, .formSubmit {
     background-color: #28A5CF;
     color: white;
 }
-h1, h2, h3 {
-    font-family: comic-relief-bold;
+h1, h2, h3, p, label, a, .formSubmit {
+    font-family: 'Comic Relief';
+}
+h1{
+    size: 3em;
+}
+button {
+    background-color: #006026;
+    border-color: #00A643;
+    cursor: pointer;
+    border: solid;
+    border-width: 2px;
+    background-size: cover;
+    padding: 5px;
+    border-radius: 20px;
+    width: 72px;
+    height: 67px;
+    color: white;
+    font-family: 'Comic Relief';
+}
+#logo-pic{
+    width: 80%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+}
+.navButton, .formSubmit {
+    justify-content: center;
+    box-sizing: border-box;
+    height: auto;
+    width: max-content;
+    background-color: #006026;
+    padding: 10px;
+    border-radius: 30px;
+}
+.navButton{
+    font-size: 1.5em;
+}
+a:link{
+    color:yellow;
+}
+a:visited{
+    color:rgb(255, 255, 255);
+}
+a:hover, a:active{
+    color: #28A5CF;
+}
+.options {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 }

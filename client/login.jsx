@@ -125,19 +125,21 @@ const ChangePassword = () => {
     )
 }
 
-const init = () => {
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
+//Separated to avoid code being broken
+const changePasscodeUI = (root) => {
     const changeButton = document.getElementById('changePassButton');
-
-    const root = createRoot(document.getElementById('content'));
-    
     changeButton.addEventListener('click', (e)=> {
         e.preventDefault();
         root.render(<ChangePassword />);
         return false;
-    });
-    //root.render(<ChangePassword />);
+    })
+}
+
+const init = () => {
+    const loginButton = document.getElementById('loginButton');
+    const signupButton = document.getElementById('signupButton');
+    
+    const root = createRoot(document.getElementById('content'));
     
     loginButton.addEventListener('click', (e)=> {
         e.preventDefault();
