@@ -81,6 +81,25 @@ const LoginWindow = (props) => {
     );
 };
 
+//handler for pay
+const handlePay = (e) => {
+    e.preventDefault();
+    helper.sendRequest('/paid', {}, 'POST');
+};
+
+const PayForm = (props) => {
+    return (
+        <form id='payForm'
+            name='payForm'
+            onSubmit={handlePay}
+            action='/paid'
+            method='POST'
+        >
+            <input className='formSubmit' type='submit' value='Pay Now'/>
+        </form>
+    )
+}
+
 const SignupWindow = (props) =>{
     return (
         <form id='signupForm'
@@ -137,9 +156,13 @@ const changePasscodeUI = (root) => {
 const init = () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
-    
+    const payContainer = document.getElementById('pay');
+
     const root = createRoot(document.getElementById('content'));
-    
+    if(payContainer) {
+        const payRoot = createRoot(payContainer);
+        payRoot.render(<PayForm />);
+    }
     loginButton.addEventListener('click', (e)=> {
         e.preventDefault();
         root.render(<LoginWindow />);
@@ -153,6 +176,6 @@ const init = () => {
     });
 };
 window.onload = init;
-module.exports = {ChangePassword, changePasscodeUI};    //exports it for todo.jsx to use in its page
+module.exports = {ChangePassword, PayForm, changePasscodeUI};    //exports it for todo.jsx to use in its page
 
 

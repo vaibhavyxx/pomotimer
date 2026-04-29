@@ -35,17 +35,20 @@ const getUserInfo = (req, res) => {
 };
 
 const paidAccount = async (req, res) => {
-    const username = req.session.account.username;
     //automatically turns it into a paid account
     try{
         const account = await Account.findOneAndUpdate(
-            {_id: req.params.id, owner: req.session.account.username},
+            { _id: req.session.account._id },
             {paid: true},
             {new: true},
         );
         if(!account)
             return res.status(404).json({ error: 'Account not found' });
-        return res.status(204).json({ status: 'success' });
+        
+        req.session.account = Account.toAPI(account);
+        req.session.save(() => {
+            return res.status(200).json({ redirect: '/todo' });
+        });
     }catch(err){
         return res.status(500).json({ error: err });
     }

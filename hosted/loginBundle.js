@@ -139,6 +139,25 @@ const LoginWindow = props => {
     value: "Sign in"
   }));
 };
+
+//handler for pay
+const handlePay = e => {
+  e.preventDefault();
+  helper.sendRequest('/paid', {}, 'POST');
+};
+const PayForm = props => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "payForm",
+    name: "payForm",
+    onSubmit: handlePay,
+    action: "/paid",
+    method: "POST"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Pay Now"
+  }));
+};
 const SignupWindow = props => {
   return /*#__PURE__*/React.createElement("form", {
     id: "signupForm",
@@ -224,7 +243,12 @@ const changePasscodeUI = root => {
 const init = () => {
   const loginButton = document.getElementById('loginButton');
   const signupButton = document.getElementById('signupButton');
+  const payContainer = document.getElementById('pay');
   const root = createRoot(document.getElementById('content'));
+  if (payContainer) {
+    const payRoot = createRoot(payContainer);
+    payRoot.render(/*#__PURE__*/React.createElement(PayForm, null));
+  }
   loginButton.addEventListener('click', e => {
     e.preventDefault();
     root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
@@ -239,6 +263,7 @@ const init = () => {
 window.onload = init;
 module.exports = {
   ChangePassword,
+  PayForm,
   changePasscodeUI
 }; //exports it for todo.jsx to use in its page
 

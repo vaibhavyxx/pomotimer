@@ -24,7 +24,8 @@ const router = (app) => {
     app.get('/logout', mid.requiresLogin, controllers.Account.logout);
     app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 
-    app.get('/pro', mid.requiresLogin, controllers.Account.paidAccount);
+    app.get('/pro', mid.requiresLogin, controllers.Account.getUserInfo);
+    app.post('/paid', mid.requiresLogin, controllers.Account.paidAccount); 
 
 };
 
