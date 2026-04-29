@@ -6,7 +6,6 @@ const {createRoot} = require('react-dom/client');
 const {Clock} = require('./timer.jsx');
 const {ChangePassword, changePasscodeUI} = require('./login.jsx');
 
-//Sample code from repository
 export const handleTodo = (e, onTaskAdded) => {
     e.preventDefault();
     const task = e.target.querySelector('#task').value;
@@ -20,10 +19,11 @@ export const handleTodo = (e, onTaskAdded) => {
     return false;
 };
 
-//functional component
+//allows users to add their todos
 const TodoForm = (props) => {
     return (
         <form id='todoForm'
+            class='todoForms'
             onSubmit={(e) => handleTodo(e, props.triggerReload)}
             name='todoForm'
             action='/todo'
@@ -36,9 +36,11 @@ const TodoForm = (props) => {
     );
 };
 
+//allows users to edit their tasks
 const EditTodoForm = (props) => {
     return (
         <form id='editForm'
+            class='todoForms'
             onSubmit={(e) => {
                 e.preventDefault();
                 const newTask = e.target.querySelector('#editTask').value;
@@ -48,21 +50,22 @@ const EditTodoForm = (props) => {
             action='/editTodo'
             method='PATCH'
             className='todoForm'>
-                <label htmlFor='task'>Task: </label>
+                <label htmlFor='task'>Edit task: </label>
                 <input id='editTask' type='text' name='task' placeholder='Task'/>
                 <input className='submitTodo' type='submit' value='Submit' />
             </form>
     );
 };
 
+//keeps tracks of all the todos and renders if a new one is added
 const TodoList = (props) => {
-    const [todos, setTodo] = useState(props.todo);  //todos is an array
+    const [todos, setTodo] = useState(props.todo);  
 
     useEffect(() => {
         const loadTasksFromServer = async () => {
             const response = await fetch('/getTask');
             const data = await response.json();
-            setTodo(data.tasks);    //new thing
+            setTodo(data.tasks);    
         };
         loadTasksFromServer();
     }, [props.reloadTasks]);    
@@ -74,7 +77,8 @@ const TodoList = (props) => {
             </div>
         );
     }
-
+    
+    //Keeps track of edits, completion and deletion and triggers response
     const TodoItem = ({todo, triggerReload}) => {
         const [completed, setCompleted] = useState(false);
         const [edited, setEdit] = useState(false);
@@ -99,15 +103,15 @@ const TodoList = (props) => {
             }
         }
        
-        //broken transistion
+        //JSX elements for the same
         return (
             <div className='todo'>
                 <h3 style={{
                     textDecoration: completed? 'line-through': 'none',
                 }}>{todo.task}</h3>
-                <button onClick={()=>setCompleted(!completed)}>{completed? 'Undo': 'Done'}</button>
-                <button onClick={handleDelete}>Remove</button>
-                <button onClick={() => setEdit(!edited)}>Edit</button>
+                <button class="todoBtn" onClick={()=>setCompleted(!completed)}>{completed? 'Undo': 'Done'}</button>
+                <button class="todoBtn" onClick={handleDelete}>Remove</button>
+                <button class="todoBtn" onClick={() => setEdit(!edited)}>Edit</button>
 
                 {edited && (<EditTodoForm onSubmit={(newTask) => {
                     updateTodo(newTask);
@@ -118,13 +122,12 @@ const TodoList = (props) => {
         );
     }
 
+    //Renders all the elements from todos array
     const todo = todos.map(todo => {
         return (
             <TodoItem key={todo._id} todo={todo} triggerReload={props.triggerReload}/>
         );
     });
-
-    //renders every single element in the list
     return (
         <div className='taskList'>
             {todo}
@@ -149,6 +152,7 @@ const App = () => {
     );
 };
 
+//loads changePass, todo and clock elements when the page is first loaded
 const init = () => {
     const root = createRoot(document.getElementById('app'));
     root.render(<App />);

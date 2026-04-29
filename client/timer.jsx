@@ -11,7 +11,7 @@ const useLoadTime = () => {
     const loadTime = async () => {
       const response = await fetch('/getTime');
       const data = await response.json();
-      console.log(data);
+
       if (data.time.length > 0) {
         setTimeValue(data.time[0].time * 60);
       } else{
@@ -57,13 +57,13 @@ function MyTimer({ expiryTimestamp, period }) {
 
   return (
     <div>
-      <h1>{timeString}</h1>
+      <h1 style={{fontSize:'10em'}} >{timeString}</h1>
       <button onClick={()=> {
         if(isRunning) pause();
         else resume();
       }}>{isRunning? 'Pause':'Play'}</button>
       <button onClick={()=>{
-        restart(newTime(period), true);
+        restart(newTime(period), false);
       }}> Restart</button>
       <ClockSetting onDurationChange={handleDurationChange}/>
     </div>

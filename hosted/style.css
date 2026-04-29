@@ -29,10 +29,17 @@ button {
     background-size: cover;
     padding: 5px;
     border-radius: 20px;
-    width: 72px;
-    height: 67px;
     color: white;
     font-family: 'Comic Relief';
+}
+.navButton{
+    width: 72px;
+    height: 67px;
+}
+.todoBtn{
+    width: max-content;
+    height: max-content;
+    padding: 5px 10px;
 }
 #logo-pic{
     width: 50%;
@@ -84,6 +91,7 @@ form{
     box-sizing: border-box;
     width: 100%;
     height: 30%;
+    margin-bottom: 30px;
 }
 nav{
     width: 100%;
@@ -101,4 +109,21 @@ footer{
     left: 0;
     right: 0;
     text-align: center;
+}
+input {
+    width: 250px;
+    border-radius: 25px;
+    padding: 5px 10px;
+}
+.todo{
+    box-sizing: border-box;
+    width: 80%;
+    height: max-content;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #93E1F7;
+    color: black;
+}
+#clockTime {
+    font-size: 5em;
 }

@@ -278,7 +278,6 @@ const useLoadTime = () => {
     const loadTime = async () => {
       const response = await fetch('/getTime');
       const data = await response.json();
-      console.log(data);
       if (data.time.length > 0) {
         setTimeValue(data.time[0].time * 60);
       } else {
@@ -326,13 +325,17 @@ function MyTimer({
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     document.title = `${timeString} - Pomodoro Timer`;
   }, [minutes, seconds]);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", null, timeString), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h1", {
+    style: {
+      fontSize: '5em'
+    }
+  }, timeString), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
       if (isRunning) pause();else resume();
     }
   }, isRunning ? 'Pause' : 'Play'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     onClick: () => {
-      restart(newTime(period), true);
+      restart(newTime(period), false);
     }
   }, " Restart"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(ClockSetting, {
     onDurationChange: handleDurationChange
@@ -425,8 +428,6 @@ const {
   ChangePassword,
   changePasscodeUI
 } = __webpack_require__(/*! ./login.jsx */ "./client/login.jsx");
-
-//Sample code from repository
 const handleTodo = (e, onTaskAdded) => {
   e.preventDefault();
   const task = e.target.querySelector('#task').value;
@@ -441,10 +442,11 @@ const handleTodo = (e, onTaskAdded) => {
   return false;
 };
 
-//functional component
+//allows users to add their todos
 const TodoForm = props => {
   return /*#__PURE__*/React.createElement("form", {
     id: "todoForm",
+    class: "todoForms",
     onSubmit: e => handleTodo(e, props.triggerReload),
     name: "todoForm",
     action: "/todo",
@@ -463,9 +465,12 @@ const TodoForm = props => {
     value: "Submit"
   }));
 };
+
+//allows users to edit their tasks
 const EditTodoForm = props => {
   return /*#__PURE__*/React.createElement("form", {
     id: "editForm",
+    class: "todoForms",
     onSubmit: e => {
       e.preventDefault();
       const newTask = e.target.querySelector('#editTask').value;
@@ -477,7 +482,7 @@ const EditTodoForm = props => {
     className: "todoForm"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "task"
-  }, "Task: "), /*#__PURE__*/React.createElement("input", {
+  }, "Edit task: "), /*#__PURE__*/React.createElement("input", {
     id: "editTask",
     type: "text",
     name: "task",
@@ -488,14 +493,15 @@ const EditTodoForm = props => {
     value: "Submit"
   }));
 };
-const TodoList = props => {
-  const [todos, setTodo] = useState(props.todo); //todos is an array
 
+//keeps tracks of all the todos and renders if a new one is added
+const TodoList = props => {
+  const [todos, setTodo] = useState(props.todo);
   useEffect(() => {
     const loadTasksFromServer = async () => {
       const response = await fetch('/getTask');
       const data = await response.json();
-      setTodo(data.tasks); //new thing
+      setTodo(data.tasks);
     };
     loadTasksFromServer();
   }, [props.reloadTasks]);
@@ -506,6 +512,8 @@ const TodoList = props => {
       className: "empty"
     }, "You're all caught up!"));
   }
+
+  //Keeps track of edits, completion and deletion and triggers response
   const TodoItem = ({
     todo,
     triggerReload
@@ -534,7 +542,7 @@ const TodoList = props => {
       }
     };
 
-    //broken transistion
+    //JSX elements for the same
     return /*#__PURE__*/React.createElement("div", {
       className: "todo"
     }, /*#__PURE__*/React.createElement("h3", {
@@ -542,10 +550,13 @@ const TodoList = props => {
         textDecoration: completed ? 'line-through' : 'none'
       }
     }, todo.task), /*#__PURE__*/React.createElement("button", {
+      class: "todoBtn",
       onClick: () => setCompleted(!completed)
     }, completed ? 'Undo' : 'Done'), /*#__PURE__*/React.createElement("button", {
+      class: "todoBtn",
       onClick: handleDelete
     }, "Remove"), /*#__PURE__*/React.createElement("button", {
+      class: "todoBtn",
       onClick: () => setEdit(!edited)
     }, "Edit"), edited && /*#__PURE__*/React.createElement(EditTodoForm, {
       onSubmit: newTask => {
@@ -554,6 +565,8 @@ const TodoList = props => {
       }
     }));
   };
+
+  //Renders all the elements from todos array
   const todo = todos.map(todo => {
     return /*#__PURE__*/React.createElement(TodoItem, {
       key: todo._id,
@@ -561,8 +574,6 @@ const TodoList = props => {
       triggerReload: props.triggerReload
     });
   });
-
-  //renders every single element in the list
   return /*#__PURE__*/React.createElement("div", {
     className: "taskList"
   }, todo);
@@ -587,6 +598,8 @@ const App = () => {
     triggerReload: () => setReloadTasks(!reloadTasks)
   })));
 };
+
+//loads changePass, todo and clock elements when the page is first loaded
 const init = () => {
   const root = createRoot(document.getElementById('app'));
   root.render(/*#__PURE__*/React.createElement(App, null));
