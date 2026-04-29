@@ -21,8 +21,6 @@ const sendRequest = async (url, data, methodType, handler) => {
     body: JSON.stringify(data)
   });
   const result = await response.json();
-  //document.getElementById('domoMessage').classList.add('hidden');
-
   if (result.redirect) {
     window.location = result.redirect;
   }
@@ -70,8 +68,6 @@ const handleLogin = e => {
 };
 const handleSignup = e => {
   e.preventDefault();
-  //helper.hideError();
-
   const username = e.target.querySelector('#user').value;
   const pass = e.target.querySelector('#pass').value;
   const pass2 = e.target.querySelector('#pass2').value;
@@ -92,8 +88,6 @@ const handleSignup = e => {
 };
 const changesPass = e => {
   e.preventDefault();
-  //helper.hideError();
-
   const oldPass = e.target.querySelector('#old-pass').value;
   const pass1 = e.target.querySelector('#pass-1').value;
   const pass2 = e.target.querySelector('#pass-2').value;
@@ -225,6 +219,8 @@ const changePasscodeUI = root => {
     return false;
   });
 };
+
+//loads the signup and login buttons
 const init = () => {
   const loginButton = document.getElementById('loginButton');
   const signupButton = document.getElementById('signupButton');
@@ -244,7 +240,7 @@ window.onload = init;
 module.exports = {
   ChangePassword,
   changePasscodeUI
-};
+}; //exports it for todo.jsx to use in its page
 
 /***/ },
 

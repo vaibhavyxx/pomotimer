@@ -21,7 +21,6 @@ const handleLogin = (e) => {
 
 const handleSignup = (e) => {
     e.preventDefault();
-    //helper.hideError();
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
@@ -42,7 +41,6 @@ const handleSignup = (e) => {
 
 const changesPass = (e) => {
     e.preventDefault();
-    //helper.hideError();
 
     const oldPass = e.target.querySelector('#old-pass').value;
     const pass1 = e.target.querySelector('#pass-1').value;
@@ -135,6 +133,7 @@ const changePasscodeUI = (root) => {
     })
 }
 
+//loads the signup and login buttons
 const init = () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
@@ -154,6 +153,6 @@ const init = () => {
     });
 };
 window.onload = init;
-module.exports = {ChangePassword, changePasscodeUI};
+module.exports = {ChangePassword, changePasscodeUI};    //exports it for todo.jsx to use in its page
 
 

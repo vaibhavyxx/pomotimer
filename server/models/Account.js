@@ -1,26 +1,10 @@
-/* This file defines our schema and model interface for the account data.
-
-   We first import bcrypt and mongoose into the file. bcrypt is an industry
-   standard tool for encrypting passwords. Mongoose is our tool for
-   interacting with our mongo database.
-*/
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
-/* When generating a password hash, bcrypt (and most other password hash
-   functions) use a "salt". The salt is simply extra data that gets hashed
-   along with the password. The addition of the salt makes it more difficult
-   for people to decrypt the passwords stored in our database. saltRounds
-   essentially defines the number of times we will hash the password and salt.
-*/
 const saltRounds = 10;
 
 let AccountModel = {};
 
-/* Our schema defines the data we will store. A username (string of alphanumeric
-   characters), a password (actually the hashed version of the password created
-   by bcrypt), and the created date.
-*/
 const AccountSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -32,6 +16,9 @@ const AccountSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  paid: {
+    type: Boolean,
   },
   createdDate: {
     type: Date,
@@ -64,6 +51,7 @@ AccountSchema.statics.authenticate = async (username, password, callback) => {
   }
 };
 
+//changes password based on if the old password is correctly entered
 AccountSchema.statics.changePassword = async (username, oldPass, newPass, callback) => {
   try{
     const doc = await AccountModel.findOne({username}).exec();

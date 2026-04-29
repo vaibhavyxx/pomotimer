@@ -1,28 +1,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title></title>
+  <title>Paid Version</title>
   <link rel="icon" type="image/png" href="/assets/img/favicon/favicon.png">
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <nav>
+<body> 
+<nav>
     <div class="navlink"><a href="/logout">Log out</a></div>
     <div class="navLink"><a href="/todo">Todo List</a></div>
     <div class="navlink"><a id="changePassButton" href="/changePassword">Change Password</a></div>
-    <div class="navlink"><a href="/pro">Get Pro</a></div>
   </nav>
 
-  <div id="clock"></div>
-  <div id="app"></div>
-  <h3><span id="errorMessage"></span></h3>
+  <h1>Pomodoro Technique: Paid Version</h1>
+
+  <p>Hi {{username}}, Get the paid version of the app in order to get rid of the ads and ensure more privacy to your data!</p>
+  <button id="paidBtn">Buy Now</button>
   <div class="ad">
     <p>Placeholder for an ad</p>
   </div>
   <footer>Designed and Developed by Vaibhavy Darshan for IGME 430.</footer>
-  <script src="/assets/todoBundle.js"></script>
+
+  <script src="/assets/loginBundle.js"></script>
 </body>
 </html>

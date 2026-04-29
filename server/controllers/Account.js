@@ -28,11 +28,28 @@ const login = (req, res) => {
     });
 };
 
-const renderWelcome = (req, res) => {
-    return res.render('/', {    //testing
+const getUserInfo = (req, res) => {
+    return res.render('pro', {    
         username: req.session.account.username,
     });
 };
+
+const paidAccount = async (req, res) => {
+    const username = req.session.account.username;
+    //automatically turns it into a paid account
+    try{
+        const account = await Account.findOneAndUpdate(
+            {_id: req.params.id, owner: req.session.account.username},
+            {paid: true},
+            {new: true},
+        );
+        if(!account)
+            return res.status(404).json({ error: 'Account not found' });
+        return res.status(204).json({ status: 'success' });
+    }catch(err){
+        return res.status(500).json({ error: err });
+    }
+}
 
 //functionality for the logged in user to change their password
 const changePassword = async (req, res) => {
@@ -65,6 +82,7 @@ const signup = async (req, res) => {
     const username = `${req.body.username}`;
     const pass = `${req.body.pass}`;
     const pass2 = `${req.body.pass2}`;
+    //By default everyone has a free account
 
     if(!username || !pass || !pass2){
         return res.status(400).json({error: 'All fields are required!'});
@@ -76,7 +94,7 @@ const signup = async (req, res) => {
 
     try{
         const hash = await Account.generateHash(pass);
-        const newAccount = new Account({username, password: hash});
+        const newAccount = new Account({username, password: hash, paid: false});
         await newAccount.save();
         req.session.account = Account.toAPI(newAccount);
         
@@ -92,4 +110,4 @@ const signup = async (req, res) => {
     }
 };
 
-module.exports = {loginPage, login, logout, signup, renderWelcome, changePassword, renderPasswordChangePage};
+module.exports = {loginPage, login, logout, signup, changePassword, renderPasswordChangePage, getUserInfo, paidAccount};
