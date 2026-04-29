@@ -10,7 +10,7 @@
 //helper functions to be DRY
 const handleError = message => {
   document.getElementById('errorMessage').textContent = message;
-  document.getElementById('domoMessage').classList.remove('hidden');
+  //document.getElementById('domoMessage').classList.remove('hidden');
 };
 const sendRequest = async (url, data, methodType, handler) => {
   const response = await fetch(url, {
@@ -21,7 +21,8 @@ const sendRequest = async (url, data, methodType, handler) => {
     body: JSON.stringify(data)
   });
   const result = await response.json();
-  document.getElementById('domoMessage').classList.add('hidden');
+  //document.getElementById('domoMessage').classList.add('hidden');
+
   if (result.redirect) {
     window.location = result.redirect;
   }
@@ -37,8 +38,8 @@ const hideError = () => {
 };
 module.exports = {
   handleError,
-  sendRequest,
-  hideError
+  sendRequest
+  //hideError,
 };
 
 /***/ },
@@ -30452,7 +30453,8 @@ const {
 } = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
 const handleLogin = e => {
   e.preventDefault();
-  helper.hideError();
+  //helper.hideError();
+
   const username = e.target.querySelector('#user').value;
   const pass = e.target.querySelector('#pass').value;
   if (!username || !pass) {
@@ -30467,7 +30469,8 @@ const handleLogin = e => {
 };
 const handleSignup = e => {
   e.preventDefault();
-  helper.hideError();
+  //helper.hideError();
+
   const username = e.target.querySelector('#user').value;
   const pass = e.target.querySelector('#pass').value;
   const pass2 = e.target.querySelector('#pass2').value;
@@ -30488,7 +30491,8 @@ const handleSignup = e => {
 };
 const changesPass = e => {
   e.preventDefault();
-  helper.hideError();
+  //helper.hideError();
+
   const oldPass = e.target.querySelector('#old-pass').value;
   const pass1 = e.target.querySelector('#pass-1').value;
   const pass2 = e.target.querySelector('#pass-2').value;
@@ -30526,14 +30530,14 @@ const LoginWindow = props => {
     id: "user",
     type: "text",
     name: "username",
-    placeholder: "username"
+    placeholder: "Username"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "pass"
   }, "Password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass",
     type: "password",
     name: "pass",
-    placeholder: "password"
+    placeholder: "Password"
   }), /*#__PURE__*/React.createElement("input", {
     className: "formSubmit",
     type: "submit",
@@ -30554,21 +30558,21 @@ const SignupWindow = props => {
     id: "user",
     type: "text",
     name: "username",
-    placeholder: "username"
+    placeholder: "Enter your username"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "pass"
   }, "Password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass",
     type: "password",
     name: "pass",
-    placeholder: "password"
+    placeholder: "Password"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "pass"
   }, "Password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass2",
     type: "password",
     name: "pass2",
-    placeholder: "retype password"
+    placeholder: "Retype password"
   }), /*#__PURE__*/React.createElement("input", {
     className: "formSubmit",
     type: "submit",

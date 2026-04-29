@@ -5,7 +5,7 @@ const {createRoot} = require('react-dom/client');
 
 const handleLogin = (e) => {
     e.preventDefault();
-    helper.hideError();
+    //helper.hideError();
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
@@ -21,7 +21,7 @@ const handleLogin = (e) => {
 
 const handleSignup = (e) => {
     e.preventDefault();
-    helper.hideError();
+    //helper.hideError();
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
@@ -42,7 +42,7 @@ const handleSignup = (e) => {
 
 const changesPass = (e) => {
     e.preventDefault();
-    helper.hideError();
+    //helper.hideError();
 
     const oldPass = e.target.querySelector('#old-pass').value;
     const pass1 = e.target.querySelector('#pass-1').value;
@@ -75,9 +75,9 @@ const LoginWindow = (props) => {
             className='mainForm'
         >
             <label htmlFor='username'>Username: </label>
-            <input id='user' type='text' name='username' placeholder='username' />
+            <input id='user' type='text' name='username' placeholder='Username' />
             <label htmlFor='pass'>Password: </label>
-            <input id='pass' type='password' name='pass' placeholder='password'/>
+            <input id='pass' type='password' name='pass' placeholder='Password'/>
             <input className='formSubmit' type='submit' value='Sign in'/>
         </form>
     );
@@ -93,11 +93,11 @@ const SignupWindow = (props) =>{
             className='mainForm'
         >
             <label htmlFor='username'>Username: </label>
-            <input id='user' type='text' name='username' placeholder='username' />
+            <input id='user' type='text' name='username' placeholder='Enter your username' />
             <label htmlFor='pass'>Password: </label>
-            <input id='pass' type='password' name='pass' placeholder='password' />
+            <input id='pass' type='password' name='pass' placeholder='Password' />
             <label htmlFor='pass'>Password: </label>
-            <input id='pass2' type='password' name='pass2' placeholder='retype password' />
+            <input id='pass2' type='password' name='pass2' placeholder='Retype password' />
             <input className='formSubmit' type='submit' value='Sign up' />
         </form>
     );
