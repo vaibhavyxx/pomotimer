@@ -27,12 +27,7 @@ const sendRequest = async (url, data, methodType, handler) => {
   }
 };
 
-const hideError = () => {
-    document.getElementById('domoMessage').classList.add('hidden');
-};
-
 module.exports = {
     handleError,
     sendRequest,
-    //hideError,
 };

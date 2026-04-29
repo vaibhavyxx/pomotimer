@@ -154,4 +154,6 @@ const init = () => {
     });
 };
 window.onload = init;
+module.exports = {ChangePassword, changePasscodeUI};
+
 

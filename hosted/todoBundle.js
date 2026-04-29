@@ -33,13 +33,217 @@ const sendRequest = async (url, data, methodType, handler) => {
     handler(result);
   }
 };
-const hideError = () => {
-  document.getElementById('domoMessage').classList.add('hidden');
-};
 module.exports = {
   handleError,
   sendRequest
-  //hideError,
+};
+
+/***/ },
+
+/***/ "./client/login.jsx"
+/*!**************************!*\
+  !*** ./client/login.jsx ***!
+  \**************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+//handles signup and everything before user logs in 
+const helper = __webpack_require__(/*! ./helper.js */ "./client/helper.js");
+const React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+const {
+  createRoot
+} = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
+const handleLogin = e => {
+  e.preventDefault();
+  //helper.hideError();
+
+  const username = e.target.querySelector('#user').value;
+  const pass = e.target.querySelector('#pass').value;
+  if (!username || !pass) {
+    helper.handleError('Username or password is empty!');
+    return false;
+  }
+  helper.sendRequest(e.target.action, {
+    username,
+    pass
+  }, 'POST');
+  return false;
+};
+const handleSignup = e => {
+  e.preventDefault();
+  //helper.hideError();
+
+  const username = e.target.querySelector('#user').value;
+  const pass = e.target.querySelector('#pass').value;
+  const pass2 = e.target.querySelector('#pass2').value;
+  if (!username || !pass || !pass2) {
+    helper.handleError('All fields are required');
+    return false;
+  }
+  if (pass !== pass2) {
+    helper.handleError('Passwords do not match!');
+    return false;
+  }
+  helper.sendRequest(e.target.action, {
+    username,
+    pass,
+    pass2
+  }, 'POST');
+  return false;
+};
+const changesPass = e => {
+  e.preventDefault();
+  //helper.hideError();
+
+  const oldPass = e.target.querySelector('#old-pass').value;
+  const pass1 = e.target.querySelector('#pass-1').value;
+  const pass2 = e.target.querySelector('#pass-2').value;
+  if (!pass1 || !oldPass) {
+    helper.handleError('Enter the new password');
+  } else {
+    if (!pass2) {
+      helper.handleError('Retype the new password');
+    }
+  }
+  if (pass1 !== pass2) {
+    helper.handleError('Password do not match!');
+  }
+  //sends a patch request
+  helper.sendRequest(e.target.action, {
+    oldPass,
+    pass1,
+    pass2
+  }, 'PATCH');
+  return false;
+};
+
+//creating react components - functional stateless component / FSC
+const LoginWindow = props => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "loginForm",
+    name: "loginForm",
+    onSubmit: handleLogin,
+    action: "/login",
+    method: "POST",
+    className: "mainForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "username"
+  }, "Username: "), /*#__PURE__*/React.createElement("input", {
+    id: "user",
+    type: "text",
+    name: "username",
+    placeholder: "Username"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass"
+  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "pass",
+    type: "password",
+    name: "pass",
+    placeholder: "Password"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Sign in"
+  }));
+};
+const SignupWindow = props => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "signupForm",
+    name: "signupForm",
+    onSubmit: handleSignup,
+    action: "/signup",
+    method: "POST",
+    className: "mainForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "username"
+  }, "Username: "), /*#__PURE__*/React.createElement("input", {
+    id: "user",
+    type: "text",
+    name: "username",
+    placeholder: "Enter your username"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass"
+  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "pass",
+    type: "password",
+    name: "pass",
+    placeholder: "Password"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass"
+  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "pass2",
+    type: "password",
+    name: "pass2",
+    placeholder: "Retype password"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Sign up"
+  }));
+};
+const ChangePassword = () => {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "changePassForm",
+    name: "changePassForm",
+    onSubmit: changesPass,
+    action: "/changePassword",
+    method: "PATCH",
+    className: "changePassForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "old-pass"
+  }, "Enter the current password: "), /*#__PURE__*/React.createElement("input", {
+    id: "old-pass",
+    type: "password",
+    name: "old-pass",
+    placeholder: "Enter the current password"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass-1"
+  }, "Enter the new password: "), /*#__PURE__*/React.createElement("input", {
+    id: "pass-1",
+    type: "password",
+    name: "pass-1",
+    placeholder: "Enter new password"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "pass-2"
+  }, "Retype the new password: "), /*#__PURE__*/React.createElement("input", {
+    id: "pass-2",
+    type: "password",
+    name: "pass-2",
+    placeholder: "Enter the password again"
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Update"
+  }));
+};
+
+//Separated to avoid code being broken
+const changePasscodeUI = root => {
+  const changeButton = document.getElementById('changePassButton');
+  changeButton.addEventListener('click', e => {
+    e.preventDefault();
+    root.render(/*#__PURE__*/React.createElement(ChangePassword, null));
+    return false;
+  });
+};
+const init = () => {
+  const loginButton = document.getElementById('loginButton');
+  const signupButton = document.getElementById('signupButton');
+  const root = createRoot(document.getElementById('content'));
+  loginButton.addEventListener('click', e => {
+    e.preventDefault();
+    root.render(/*#__PURE__*/React.createElement(LoginWindow, null));
+    return false;
+  });
+  signupButton.addEventListener('click', e => {
+    e.preventDefault();
+    root.render(/*#__PURE__*/React.createElement(SignupWindow, null));
+    return false;
+  });
+};
+window.onload = init;
+module.exports = {
+  ChangePassword,
+  changePasscodeUI
 };
 
 /***/ },
@@ -217,19 +421,22 @@ const {
 const {
   Clock
 } = __webpack_require__(/*! ./timer.jsx */ "./client/timer.jsx");
+const {
+  ChangePassword,
+  changePasscodeUI
+} = __webpack_require__(/*! ./login.jsx */ "./client/login.jsx");
 
 //Sample code from repository
 const handleTodo = (e, onTaskAdded) => {
   e.preventDefault();
-  helper.hideError();
   const task = e.target.querySelector('#task').value;
   if (!task) {
-    helper.handleError('All fields are required');
+    helper.handleError('All fields are required!');
     return false;
   }
   helper.sendRequest(e.target.action, {
     task
-  }, onTaskAdded, 'POST');
+  }, 'POST', onTaskAdded);
   e.target.querySelector('#task').value = '';
   return false;
 };
@@ -383,6 +590,7 @@ const App = () => {
 const init = () => {
   const root = createRoot(document.getElementById('app'));
   root.render(/*#__PURE__*/React.createElement(App, null));
+  changePasscodeUI(root);
 };
 window.onload = init;
 

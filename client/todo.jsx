@@ -4,19 +4,18 @@ const React = require('react');
 const {useState, useEffect} = React;
 const {createRoot} = require('react-dom/client');
 const {Clock} = require('./timer.jsx');
+const {ChangePassword, changePasscodeUI} = require('./login.jsx');
 
 //Sample code from repository
 export const handleTodo = (e, onTaskAdded) => {
     e.preventDefault();
-    helper.hideError();
-
     const task = e.target.querySelector('#task').value;
 
     if(!task){
-        helper.handleError('All fields are required');
+        helper.handleError('All fields are required!');
         return false;
     }
-    helper.sendRequest(e.target.action, {task}, onTaskAdded, 'POST');
+    helper.sendRequest(e.target.action, {task}, 'POST', onTaskAdded);
      e.target.querySelector('#task').value = '';
     return false;
 };
@@ -150,11 +149,10 @@ const App = () => {
     );
 };
 
-
-
 const init = () => {
     const root = createRoot(document.getElementById('app'));
     root.render(<App />);
+    changePasscodeUI(root);
 };
 
 window.onload = init;
